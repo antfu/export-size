@@ -1,6 +1,6 @@
-import { parse} from '@babel/parser'
-import { default as traverse } from '@babel/traverse'
 import path from 'path'
+import { parse } from '@babel/parser'
+import traverse from '@babel/traverse'
 import fs from 'fs-extra'
 import enhancedResolve from 'enhanced-resolve'
 
@@ -22,21 +22,23 @@ function getExportsDetails(code: string) {
     ExportNamedDeclaration(path) {
       const { specifiers, declaration } = path.node
       exportsList = exportsList.concat(
-        specifiers.map((specifier) => specifier.exported.name)
+        specifiers.map(specifier => specifier.exported.name),
       )
 
       if (declaration) {
         if (declaration.declarations) {
-          const moreExports = declaration.declarations.map((dec) => {
+          declaration.declarations.forEach((dec) => {
             if (dec.id.type === 'ObjectPattern') {
               exportsList = exportsList.concat(
-                dec.id.properties.map((property) => property.value.name)
+                dec.id.properties.map(property => property.value.name),
               )
-            } else if (dec.id.type === 'Identifier') {
+            }
+            else if (dec.id.type === 'Identifier') {
               exportsList.push(dec.id.name)
             }
           })
-        } else if (declaration.id) {
+        }
+        else if (declaration.id) {
           exportsList.push(declaration.id.name)
         }
       }
@@ -78,7 +80,7 @@ const resolver = enhancedResolve.create.sync({
  * from a given path
  */
 export async function getAllExports(context: string, lookupPath: string) {
-  const getAllExportsRecursive = async (ctx, lookPath) => {
+  const getAllExportsRecursive = async(ctx, lookPath) => {
     const resolvedPath = resolver(ctx, lookPath)
 
     if (!resolvedPath)
@@ -90,15 +92,15 @@ export async function getAllExports(context: string, lookupPath: string) {
 
     exports.forEach((exp) => {
       const relativePath = resolvedPath.substring(
-        resolvedPath.indexOf(context) + context.length + 1
+        resolvedPath.indexOf(context) + context.length + 1,
       )
       resolvedExports[exp] = relativePath
     })
 
-    const promises = exportAllLocations.map(async (location) => {
+    const promises = exportAllLocations.map(async(location) => {
       const exports = await getAllExportsRecursive(
         path.dirname(resolvedPath),
-        location
+        location,
       )
       Object.keys(exports).forEach((expKey) => {
         resolvedExports[expKey] = exports[expKey]

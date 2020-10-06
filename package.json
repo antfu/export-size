@@ -6,7 +6,7 @@
   "author": "Anthony Fu <anthonyfu117@hotmail.com>",
   "license": "MIT",
   "bin": {
-    "export-size": "bin/export-size"
+    "export-size": "bin/export-size.js"
   },
   "files": [
     "dist",
@@ -14,12 +14,14 @@
     "bin"
   ],
   "scripts": {
-    "dev": "esno src/dev.ts",
+    "dev": "esno src/cli.ts",
     "build": "tsup src/index.ts src/cli.ts --format cjs,esm --dts",
     "prepare": "npm run build"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.3.3",
+    "@types/cli-progress": "^3.8.0",
+    "@types/yargs": "^15.0.7",
     "eslint": "^7.10.0",
     "esno": "^0.2.0",
     "tsup": "^3.7.0",
@@ -31,11 +33,12 @@
     "@rollup/plugin-node-resolve": "^9.0.0",
     "@types/fs-extra": "^9.0.1",
     "@types/node": "^14.11.5",
+    "chalk": "^4.1.0",
+    "cli-progress": "^3.8.2",
     "enhanced-resolve": "^5.2.0",
     "filesize": "^6.1.0",
     "fs-extra": "^9.0.1",
     "gzip-size": "^5.1.1",
-    "package-build-stats": "^6.2.2",
     "rollup": "^2.28.2",
     "rollup-plugin-terser": "^7.0.2",
     "yargs": "^16.0.3"

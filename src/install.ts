@@ -1,6 +1,6 @@
 import { execSync } from 'child_process'
-import fs from 'fs-extra'
 import path from 'path'
+import fs from 'fs-extra'
 import { getAllExports } from './exports'
 import { parsePackage } from './utils'
 
@@ -8,11 +8,11 @@ export async function install(
   dir: string,
   pkg: string,
   clean = true,
-  extra: string[] = []
+  extra: string[] = [],
 ) {
-  if (clean) {
+  if (clean)
     await fs.remove(dir)
-  }
+
   await fs.ensureDir(dir)
 
   function run(cmd: string) {
@@ -28,10 +28,10 @@ export async function install(
       [pkg, ...extra].map((i) => {
         const { name, version } = parsePackage(i)
         return [name, version]
-      })
+      }),
     ),
   })
-  run(`npm i`)
+  run('npm i -s')
 
   const exports = await getAllExports(dir, name)
 
