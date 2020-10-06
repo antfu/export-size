@@ -103,6 +103,16 @@ sha 8ef798bf7d22f9cca7681c3bb717af59e6b1685d
 └───────────────────────────┴──────────┘
 ```
 
+## Sponsors
+
+This project is part of my <a href='https://github.com/antfu-sponsors'>Sponsor Program</a>
+
+<p align="center">
+  <a href="https://cdn.jsdelivr.net/gh/antfu/static/sponsors.svg">
+    <img src='https://cdn.jsdelivr.net/gh/antfu/static/sponsors.svg'/>
+  </a>
+</p>
+
 ## License
 
 MIT
