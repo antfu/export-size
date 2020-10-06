@@ -16,7 +16,7 @@ export async function install(
   await fs.ensureDir(dir)
 
   function run(cmd: string) {
-    execSync(cmd, { cwd: dir, stdio: 'inherit' })
+    execSync(cmd, { cwd: dir })
   }
 
   const { name } = parsePackage(pkg)

@@ -1,10 +1,11 @@
-import { install } from './install'
 import { getExportSize } from './build'
+import { install } from './install'
 import path from 'path'
-import filesize from 'filesize'
 
+export * from './build'
+export * from './install'
 
-async function getExportsSize(pkg: string, external: string[] = []) {
+export async function getExportsSize(pkg: string, external: string[] = []) {
   const dir = path.resolve(__dirname, '..', 'tmp')
 
   const exprots = await install(dir, pkg, true, external)
@@ -13,7 +14,7 @@ async function getExportsSize(pkg: string, external: string[] = []) {
     Object.keys(exprots).map(async (name) => {
       const size = await getExportSize({
         dir,
-        dist: 'dist',
+        dist: 'export-size-output',
         pkg,
         name,
         external,
@@ -27,10 +28,3 @@ async function getExportsSize(pkg: string, external: string[] = []) {
 
   return result
 }
-
-getExportsSize('@vueuse/core', ['vue@next', '@vue/runtime-dom']).then((r) => {
-  console.table(
-    r.map((i) => ({ name: i.name, size: filesize(i.size) })),
-    ['name', 'size']
-  )
-})
