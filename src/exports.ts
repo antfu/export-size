@@ -72,7 +72,7 @@ const resolver = enhancedResolve.create.sync({
     '.scss',
   ],
   modules: ['node_modules'],
-  mainFields: ['browser', 'module', 'main', 'style'],
+  mainFields: ['module', 'main'],
 })
 
 /**

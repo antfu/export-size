@@ -7,14 +7,8 @@ import { parsePackage } from './utils'
 export async function install(
   dir: string,
   pkg: string,
-  clean = true,
   extra: string[] = [],
 ) {
-  if (clean)
-    await fs.remove(dir)
-
-  await fs.ensureDir(dir)
-
   function run(cmd: string) {
     execSync(cmd, { cwd: dir })
   }

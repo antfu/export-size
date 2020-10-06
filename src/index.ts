@@ -1,4 +1,5 @@
 import path from 'path'
+import fs from 'fs-extra'
 import { getExportSize } from './build'
 import { install } from './install'
 
@@ -11,6 +12,7 @@ interface ExportsSizeOptions {
   extraDependencies?: string[]
   output?: boolean
   reporter?: (name: string, progress: number, total: number) => void
+  clean?: boolean
 }
 
 export async function getExportsSize({
@@ -19,14 +21,20 @@ export async function getExportsSize({
   extraDependencies = [],
   reporter,
   output = true,
+  clean = true,
 }: ExportsSizeOptions) {
   const dist = 'export-size-output'
   const dir = path.resolve(dist, 'temp')
 
+  if (clean && fs.pathExists(dist))
+    await fs.remove(dist)
+  await fs.ensureDir(dist)
+  await fs.ensureDir(dir)
+
   const {
     exports,
     dependencies,
-  } = await install(dir, pkg, true, extraDependencies)
+  } = await install(dir, pkg, extraDependencies)
 
   const total = Object.keys(exports).length
   let count = 0

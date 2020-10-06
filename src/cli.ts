@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-expressions */
 import filesize from 'filesize'
 import chalk from 'chalk'
-import yargs, { argv } from 'yargs'
+import yargs from 'yargs'
 import { SingleBar, Presets } from 'cli-progress'
 import Table from 'cli-table3'
 import { getExportsSize } from '.'
@@ -11,7 +11,7 @@ yargs
   .usage('$0 [args]')
   .command(
     '* [package]',
-    'Analysis bundle cost for each export of the packages',
+    'Analysis bundle cost for each export of a package',
     (args) => {
       return args
         .positional('package', {
