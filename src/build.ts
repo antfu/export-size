@@ -1,10 +1,14 @@
 import path from 'path'
-import { rollup } from 'rollup'
+import { rollup, RollupCache } from 'rollup'
 import nodeResolve from '@rollup/plugin-node-resolve'
 import { terser } from 'rollup-plugin-terser'
 import gzipSize from 'gzip-size'
 import fs from 'fs-extra'
 import { parsePackage } from './utils'
+
+const cache: RollupCache = {
+  modules: [],
+}
 
 export async function build(
   dir: string,
@@ -15,6 +19,7 @@ export async function build(
 ) {
   const bundle = await rollup({
     input: path.join(dir, name),
+    cache,
     plugins: [nodeResolve()],
     external: external.map(i => parsePackage(i).name),
   })
@@ -50,7 +55,7 @@ export async function getExportSize({
   output = true,
 }) {
   await fs.writeFile(
-    `tmp/${name}.js`,
+    path.join(dir, `${name}.js`),
     `import { ${name} } from '${pkg}'; _(${name})`,
     'utf-8',
   )

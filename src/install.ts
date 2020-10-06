@@ -33,7 +33,25 @@ export async function install(
   })
   run('npm i -s')
 
+  const packageJsonPath = require.resolve(`${name}/package.json`, { paths: [dir] })
+  const packageDir = path.dirname(packageJsonPath)
+
+  const packageJSON = await fs.readJSON(packageJsonPath)
+
+  const dependencies = Array.from(
+    new Set([
+      ...Object.keys(packageJSON.dependencies || {}),
+      ...Object.keys(packageJSON.peerDependencies || {}),
+      ...Object.keys(packageJSON.devDependencies || {}),
+    ]),
+  )
+
   const exports = await getAllExports(dir, name)
 
-  return exports
+  return {
+    exports,
+    dependencies,
+    packageJSON,
+    packageDir,
+  }
 }

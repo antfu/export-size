@@ -8,6 +8,7 @@ export * from './install'
 interface ExportsSizeOptions {
   pkg: string
   external?: string[]
+  extraDependencies?: string[]
   output?: boolean
   reporter?: (name: string, progress: number, total: number) => void
 }
@@ -15,25 +16,30 @@ interface ExportsSizeOptions {
 export async function getExportsSize({
   pkg,
   external = [],
+  extraDependencies = [],
   reporter,
   output = true,
 }: ExportsSizeOptions) {
-  const dir = path.resolve(__dirname, '..', 'tmp')
+  const dist = 'export-size-output'
+  const dir = path.resolve(dist, 'temp')
 
-  const exprots = await install(dir, pkg, true, external)
+  const {
+    exports,
+    dependencies,
+  } = await install(dir, pkg, true, extraDependencies)
 
-  const total = Object.keys(exprots).length
+  const total = Object.keys(exports).length
   let count = 0
 
   const result = []
 
-  for (const name of Object.keys(exprots)) {
+  for (const name of Object.keys(exports)) {
     const size = await getExportSize({
       dir,
       dist: 'export-size-output',
       pkg,
       name,
-      external,
+      external: [...external, ...dependencies],
       output,
     })
 
