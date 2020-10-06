@@ -13,6 +13,12 @@
     "src",
     "bin"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antfu/export-size.git"
+  },
+  "bugs": "https://github.com/antfu/export-size/issues",
+  "homepage": "https://github.com/antfu/export-size#readme",
   "scripts": {
     "dev": "esno src/cli.ts",
     "build": "tsup src/index.ts src/cli.ts --format cjs,esm --dts",
