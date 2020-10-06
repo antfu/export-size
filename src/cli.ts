@@ -53,7 +53,7 @@ yargs
 
       bar.start(0, 0, { name: '' })
 
-      const result = await getExportsSize({
+      const { result, packageInfo } = await getExportsSize({
         pkg: args.package,
         external: args.external,
         extraDependencies: args.install,
@@ -68,17 +68,22 @@ yargs
 
       const table = new Table({
         chars: { mid: '', 'left-mid': '', 'mid-mid': '', 'right-mid': '' },
-        head: ['export\n', 'size\n'],
+        head: ['export\n', 'min+gzip\n'],
         colAligns: ['left', 'right'],
       })
 
-      for (const { name, size } of result)
-        table.push([name, filesize(size)])
+      for (const { name, gzipped } of result)
+        table.push([name, filesize(gzipped)])
 
       console.log()
-      console.log(chalk.green(args.package))
+      console.log(chalk.blue('export size report'))
+      console.log()
+      console.log(`${chalk.green(args.package)} v${packageInfo.packageJSON.version}`)
+      if (packageInfo.packageJSON._shasum)
+        console.log(chalk.gray(`sha ${packageInfo.packageJSON._shasum}`))
       console.log()
       console.log(table.toString())
+      console.log()
     },
   )
   .showHelpOnFail(false)

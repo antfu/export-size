@@ -2,9 +2,13 @@
 
 Analysis bundle cost for each export of a package
 
+### Install
+
 ```bash
 npx export-size [package-name]
 ```
+
+### Usage
 
 For example
 
@@ -13,85 +17,92 @@ npx export-size @vueuse/core
 ```
 
 ```ts
-@vueuse/core
+export size report
 
-┌───────────────────────────┬─────────┐
-│ export                    │    size │
-│                           │         │
-│ useWebWorkerFn            │ 1.05 KB │
-│ useTransition             │   967 B │
-│ useParallax               │   965 B │
-│ asyncComputed             │   904 B │
-│ useShare                  │   799 B │
-│ useIdle                   │   610 B │
-│ useSessionStorage         │   586 B │
-│ useLocalStorage           │   582 B │
-│ useStorage                │   572 B │
-│ useStoragePlain           │   572 B │
-│ useDeviceMotion           │   539 B │
-│ useMouseInElement         │   537 B │
-│ useElementVisibility      │   474 B │
-│ useEventSource            │   465 B │
-│ useOnline                 │   451 B │
-│ useNetwork                │   443 B │
-│ useDevicePixelRatio       │   438 B │
-│ useRefHistory             │   423 B │
-│ onStartTyping             │   420 B │
-│ useMouse                  │   401 B │
-│ useGeolocation            │   397 B │
-│ useBrowserLocation        │   386 B │
-│ useBattery                │   385 B │
-│ useAsyncState             │   356 B │
-│ usePermission             │   343 B │
-│ useWindowSize             │   327 B │
-│ useClipboard              │   325 B │
-│ useWindowScroll           │   320 B │
-│ useWebSocket              │   319 B │
-│ useThrottle               │   317 B │
-│ useDeviceOrientation      │   308 B │
-│ usePreferredColorScheme   │   303 B │
-│ usePageLeave              │   285 B │
-│ useTimeoutFn              │   280 B │
-│ useCssVar                 │   275 B │
-│ useDocumentVisibility     │   274 B │
-│ useInterval               │   269 B │
-│ usePreferredLanguages     │   267 B │
-│ useDebounce               │   265 B │
-│ useWebWorker              │   261 B │
-│ useDeviceLight            │   256 B │
-│ usePreferredDark          │   255 B │
-│ useThrottleFn             │   249 B │
-│ useIntersectionObserver   │   235 B │
-│ useRaf                    │   231 B │
-│ useTimeout                │   230 B │
-│ useTitle                  │   227 B │
-│ useMediaQuery             │   225 B │
-│ useRafFn                  │   220 B │
-│ useEventListener          │   213 B │
-│ useFullscreen             │   204 B │
-│ useIntervalFn             │   200 B │
-│ useNow                    │   195 B │
-│ useResizeObserver         │   190 B │
-│ useDebounceFn             │   188 B │
-│ useMutationObserver       │   184 B │
-│ useCounter                │   179 B │
-│ createGlobalState         │   177 B │
-│ explicitComputed          │   139 B │
-│ tryOnMounted              │   138 B │
-│ isWindow                  │   137 B │
-│ assert                    │   130 B │
-│ isObject                  │   116 B │
-│ tryOnUnmounted            │   105 B │
-│ clamp                     │    88 B │
-│ isBoolean                 │    82 B │
-│ isNumber                  │    81 B │
-│ isString                  │    81 B │
-│ DEVICE_PIXEL_RATIO_SCALES │    77 B │
-│ isFunction                │    77 B │
-│ isClient                  │    76 B │
-│ isDef                     │    74 B │
-│ now                       │    73 B │
-│ timestamp                 │    73 B │
-│ noop                      │    56 B │
-└───────────────────────────┴─────────┘
+@vueuse/core v4.0.0-beta.20
+sha 8ef798bf7d22f9cca7681c3bb717af59e6b1685d
+
+┌───────────────────────────┬──────────┐
+│ export                    │ min+gzip │
+│                           │          │
+│ useWebWorkerFn            │   1.1 KB │
+│ useTransition             │   1007 B │
+│ useParallax               │    987 B │
+│ asyncComputed             │    924 B │
+│ useShare                  │    817 B │
+│ useIdle                   │    651 B │
+│ useSessionStorage         │    604 B │
+│ useLocalStorage           │    600 B │
+│ useStoragePlain           │    597 B │
+│ useStorage                │    586 B │
+│ useDeviceMotion           │    559 B │
+│ useMouseInElement         │    542 B │
+│ useElementVisibility      │    503 B │
+│ useDevicePixelRatio       │    489 B │
+│ onStartTyping             │    471 B │
+│ useEventSource            │    471 B │
+│ useOnline                 │    467 B │
+│ useNetwork                │    455 B │
+│ useRefHistory             │    451 B │
+│ useGeolocation            │    408 B │
+│ useBrowserLocation        │    405 B │
+│ useMouse                  │    403 B │
+│ useBattery                │    395 B │
+│ useAsyncState             │    367 B │
+│ usePermission             │    365 B │
+│ useWindowSize             │    347 B │
+│ useWindowScroll           │    344 B │
+│ useClipboard              │    337 B │
+│ usePreferredColorScheme   │    333 B │
+│ useWebSocket              │    329 B │
+│ useDeviceOrientation      │    324 B │
+│ useThrottle               │    318 B │
+│ usePageLeave              │    300 B │
+│ useDocumentVisibility     │    291 B │
+│ usePreferredDark          │    285 B │
+│ useCssVar                 │    284 B │
+│ usePreferredLanguages     │    282 B │
+│ useTimeoutFn              │    282 B │
+│ useWebWorker              │    277 B │
+│ useDeviceLight            │    273 B │
+│ useInterval               │    273 B │
+│ useDebounce               │    262 B │
+│ useThrottleFn             │    258 B │
+│ useMediaQuery             │    247 B │
+│ useRaf                    │    244 B │
+│ useTitle                  │    243 B │
+│ useIntersectionObserver   │    239 B │
+│ useTimeout                │    227 B │
+│ useRafFn                  │    224 B │
+│ useEventListener          │    222 B │
+│ useNow                    │    207 B │
+│ useDebounceFn             │    204 B │
+│ useFullscreen             │    201 B │
+│ useIntervalFn             │    199 B │
+│ createGlobalState         │    197 B │
+│ useResizeObserver         │    195 B │
+│ useMutationObserver       │    190 B │
+│ useCounter                │    183 B │
+│ explicitComputed          │    146 B │
+│ isWindow                  │    144 B │
+│ tryOnMounted              │    143 B │
+│ assert                    │    137 B │
+│ isObject                  │    122 B │
+│ DEVICE_PIXEL_RATIO_SCALES │    109 B │
+│ tryOnUnmounted            │    107 B │
+│ clamp                     │     98 B │
+│ isBoolean                 │     92 B │
+│ isNumber                  │     91 B │
+│ isString                  │     91 B │
+│ timestamp                 │     87 B │
+│ isFunction                │     86 B │
+│ isDef                     │     84 B │
+│ isClient                  │     83 B │
+│ now                       │     79 B │
+│ noop                      │     65 B │
+└───────────────────────────┴──────────┘
 ```
+
+## License
+
+MIT

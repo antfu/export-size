@@ -1,7 +1,7 @@
 import path from 'path'
 import { rollup, RollupCache } from 'rollup'
 import nodeResolve from '@rollup/plugin-node-resolve'
-import { terser } from 'rollup-plugin-terser'
+import { minify } from 'terser'
 import gzipSize from 'gzip-size'
 import fs from 'fs-extra'
 import { parsePackage } from './utils'
@@ -24,26 +24,27 @@ export async function build(
     external: external.map(i => parsePackage(i).name),
   })
 
-  const shaked = await bundle[output ? 'write' : 'generate']({
-    file: path.join(dist, 'bundled', `${name}.js`),
-  })
+  const generated = await bundle.generate({})
+  const code = generated.output[0].code
+  const minified = (await minify(code, {
+    format: {
+      comments: false,
+    },
+  })).code
 
-  const min = await bundle[output ? 'write' : 'generate']({
-    file: path.join(dist, 'min', `${name}.min.js`),
-    plugins: [
-      terser({
-        compress: true,
-        format: {
-          comments: false,
-        },
-      }),
-    ],
-  })
+  if (output) {
+    await fs.writeFile(path.join(dist, 'bundled', `${name}.js`), code, 'utf-8')
+    await fs.writeFile(path.join(dist, 'min', `${name}.min.js`), minified, 'utf-8')
+  }
 
   return {
-    shaked,
-    min,
+    code,
+    minified,
   }
+}
+
+function stringSize(string: string) {
+  return Buffer.byteLength(string, 'utf8')
 }
 
 export async function getExportSize({
@@ -56,10 +57,15 @@ export async function getExportSize({
 }) {
   await fs.writeFile(
     path.join(dir, `${name}.js`),
-    `import { ${name} } from '${pkg}'; _(${name})`,
+    name === 'default'
+      ? `import _default from '${pkg}'; _(_default)`
+      : `import { ${name} } from '${pkg}'; _(${name})`,
     'utf-8',
   )
 
-  const { min } = await build(dir, name, dist, external, output)
-  return await gzipSize(min.output[0].code)
+  const { minified } = await build(dir, name, dist, external, output)
+  return {
+    size: stringSize(minified),
+    gzipped: await gzipSize(minified),
+  }
 }
