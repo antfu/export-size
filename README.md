@@ -17,8 +17,6 @@ npx export-size @vueuse/core
 ```
 
 ```ts
-export size report
-
 @vueuse/core v4.0.0-beta.20
 sha 8ef798bf7d22f9cca7681c3bb717af59e6b1685d
 
