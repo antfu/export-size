@@ -103,6 +103,13 @@ sha 8ef798bf7d22f9cca7681c3bb717af59e6b1685d
 └───────────────────────────┴──────────┘
 ```
 
+## TODO
+
+- Support local packages
+- Support JSON output
+- ESBuild
+- Support custom output path
+
 ## Sponsors
 
 This project is part of my <a href='https://github.com/antfu-sponsors'>Sponsor Program</a>
