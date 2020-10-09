@@ -1,9 +1,10 @@
 import path from 'path'
 import fs from 'fs-extra'
-import { getExportSize } from './build'
+import gzipSize from 'gzip-size'
 import { install } from './install'
+import { Bundler } from './esbuild'
 
-export * from './build'
+export * from './esbuild'
 export * from './install'
 
 interface ExportsSizeOptions {
@@ -13,6 +14,27 @@ interface ExportsSizeOptions {
   output?: boolean
   reporter?: (name: string, progress: number, total: number) => void
   clean?: boolean
+}
+
+function stringSize(string: string) {
+  return Buffer.byteLength(string, 'utf8')
+}
+
+export async function getExportSize({
+  dir = 'tmp',
+  pkg,
+  name,
+  external = [],
+}) {
+  const bundler = new Bundler(pkg, external, dir)
+  await bundler.stop()
+
+  const { bundled, minified } = await bundler.bundle(name)
+
+  return {
+    rawSize: stringSize(bundled),
+    gzipSize: await gzipSize(minified),
+  }
 }
 
 export async function getExportsSize({
@@ -33,7 +55,7 @@ export async function getExportsSize({
 
   if (output) {
     await fs.ensureDir(path.join(dist, 'bundled'))
-    await fs.ensureDir(path.join(dist, 'min'))
+    await fs.ensureDir(path.join(dist, 'minified'))
   }
 
   const packageInfo = await install(dir, pkg, extraDependencies)
@@ -46,27 +68,32 @@ export async function getExportsSize({
   const total = Object.keys(exports).length
   let count = 0
 
-  const result: {name: string; size: number; gzipped: number}[] = []
+  const result: {name: string; size: number }[] = []
+
+  const bundler = new Bundler(pkg, [...external, ...dependencies], dir)
+  await bundler.start()
 
   for (const name of Object.keys(exports)) {
-    const size = await getExportSize({
-      dir,
-      dist,
-      pkg,
-      name,
-      external: [...external, ...dependencies],
-      output,
-    })
+    const { bundled, minified } = await bundler.bundle(name)
+
+    if (output) {
+      await fs.writeFile(path.join(dist, 'bundled', `${name}.js`), bundled, 'utf-8')
+      await fs.writeFile(path.join(dist, 'minified', `${name}.min.js`), minified, 'utf-8')
+    }
+
+    const size = await gzipSize(minified)
 
     count += 1
 
     if (reporter)
       reporter(name, count, total)
 
-    result.push({ name, ...size })
+    result.push({ name, size })
   }
 
-  result.sort((a, b) => b.gzipped - a.gzipped)
+  bundler.stop()
+
+  result.sort((a, b) => b.size - a.size)
 
   return {
     result,

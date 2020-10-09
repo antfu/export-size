@@ -31,7 +31,7 @@ yargs
           describe: 'external packages',
         })
         .option('output', {
-          default: true,
+          default: false,
           type: 'boolean',
           alias: 'o',
           describe: 'output',
@@ -72,11 +72,9 @@ yargs
         colAligns: ['left', 'right'],
       })
 
-      for (const { name, gzipped } of result)
-        table.push([name, filesize(gzipped)])
+      for (const { name, size } of result)
+        table.push([name, filesize(size)])
 
-      console.log()
-      console.log(chalk.blue('export size report'))
       console.log()
       console.log(`${chalk.green(args.package)} v${packageInfo.packageJSON.version}`)
       if (packageInfo.packageJSON._shasum)
