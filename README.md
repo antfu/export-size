@@ -1,6 +1,6 @@
 # export-size
 
-Analysis bundle cost for each export of a package
+Analysis bundle cost for each export of a package, powered by ESBuild
 
 ### Install
 
@@ -103,10 +103,10 @@ sha 8ef798bf7d22f9cca7681c3bb717af59e6b1685d
 
 ## TODO
 
-- Support local packages
-- Support JSON output
-- ESBuild
-- Support custom output path
+- [ ] Support local packages
+- [ ] Support JSON output
+- [x] ESBuild
+- [ ] Support custom output path
 
 ## Sponsors
 

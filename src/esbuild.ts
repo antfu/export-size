@@ -46,8 +46,13 @@ export class Bundler {
       }
     }
     catch (e) {
+      console.log()
       console.log(entry)
-      throw e
+      console.error(e)
+      return {
+        bundled: '',
+        minified: '',
+      }
     }
   }
 
