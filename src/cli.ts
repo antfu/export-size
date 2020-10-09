@@ -53,7 +53,7 @@ yargs
 
       bar.start(0, 0, { name: '' })
 
-      const { result, packageInfo } = await getExportsSize({
+      const { result, packageJSON, name } = await getExportsSize({
         pkg: args.package,
         external: args.external,
         extraDependencies: args.install,
@@ -76,9 +76,9 @@ yargs
         table.push([name, filesize(size)])
 
       console.log()
-      console.log(`${chalk.green(args.package)} v${packageInfo.packageJSON.version}`)
-      if (packageInfo.packageJSON._shasum)
-        console.log(chalk.gray(`sha ${packageInfo.packageJSON._shasum}`))
+      console.log(`${chalk.green(name)} v${packageJSON.version}`)
+      if (packageJSON._shasum)
+        console.log(chalk.gray(`sha ${packageJSON._shasum}`))
       console.log()
       console.log(table.toString())
       console.log()

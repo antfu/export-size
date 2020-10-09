@@ -1,12 +1,30 @@
 import { execSync } from 'child_process'
 import path from 'path'
 import fs from 'fs-extra'
-import { getAllExports } from './exports'
 import { parsePackage } from './utils'
 
-export async function install(
-  dir: string,
+export async function loadPackageJSON(packageDir: string) {
+  const packageJSON = await fs.readJSON(path.join(packageDir, 'package.json'))
+
+  const dependencies = Array.from(
+    new Set([
+      ...Object.keys(packageJSON.dependencies || {}),
+      ...Object.keys(packageJSON.peerDependencies || {}),
+      ...Object.keys(packageJSON.devDependencies || {}),
+    ]),
+  )
+
+  return {
+    name: packageJSON.name,
+    packageDir,
+    packageJSON,
+    dependencies,
+  }
+}
+
+export async function installTemporaryPackage(
   pkg: string,
+  dir: string,
   extra: string[] = [],
 ) {
   function run(cmd: string) {
@@ -14,6 +32,8 @@ export async function install(
   }
 
   const { name } = parsePackage(pkg)
+
+  await fs.ensureDir(dir)
 
   await fs.writeJSON(path.join(dir, 'package.json'), {
     type: 'module',
@@ -25,27 +45,11 @@ export async function install(
       }),
     ),
   })
+
   run('npm i -s')
 
   const packageJsonPath = require.resolve(`${name}/package.json`, { paths: [dir] })
   const packageDir = path.dirname(packageJsonPath)
 
-  const packageJSON = await fs.readJSON(packageJsonPath)
-
-  const dependencies = Array.from(
-    new Set([
-      ...Object.keys(packageJSON.dependencies || {}),
-      ...Object.keys(packageJSON.peerDependencies || {}),
-      ...Object.keys(packageJSON.devDependencies || {}),
-    ]),
-  )
-
-  const exports = await getAllExports(dir, name)
-
-  return {
-    exports,
-    dependencies,
-    packageJSON,
-    packageDir,
-  }
+  return packageDir
 }

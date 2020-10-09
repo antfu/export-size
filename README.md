@@ -1,6 +1,6 @@
 # export-size
 
-Analysis bundle cost for each export of a package, powered by ESBuild
+Analysis bundle cost for each export of an ESM package, powered by ESBuild
 
 ### Install
 
@@ -10,10 +10,16 @@ npx export-size [package-name]
 
 ### Usage
 
-For example
+Calculate npm package
 
 ```bash
 npx export-size @vueuse/core
+```
+
+Calculate local package
+
+```bash
+npx export-size .
 ```
 
 ```ts
@@ -103,7 +109,7 @@ sha 8ef798bf7d22f9cca7681c3bb717af59e6b1685d
 
 ## TODO
 
-- [ ] Support local packages
+- [x] Support local packages
 - [ ] Support JSON output
 - [x] ESBuild
 - [ ] Support custom output path

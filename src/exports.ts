@@ -71,7 +71,7 @@ const resolver = enhancedResolve.create.sync({
     '.sass',
     '.scss',
   ],
-  modules: ['node_modules'],
+  modules: ['node_modules', '.'],
   mainFields: ['module', 'main'],
 })
 
@@ -79,7 +79,7 @@ const resolver = enhancedResolve.create.sync({
  * Recursively get all exports starting
  * from a given path
  */
-export async function getAllExports(context: string, lookupPath: string) {
+export async function getAllExports(context: string, lookupPath: string): Promise<Record<string, string>> {
   const getAllExportsRecursive = async(ctx, lookPath) => {
     const resolvedPath = resolver(ctx, lookPath)
 
