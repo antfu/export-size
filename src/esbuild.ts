@@ -24,7 +24,7 @@ export class Bundler {
     try {
       const bundledResult = await this.service.build({
         bundle: true,
-        minify: true,
+        minify: false,
         format: 'esm',
         platform: 'node',
         write: false,
