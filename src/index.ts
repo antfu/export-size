@@ -49,6 +49,12 @@ export async function getExportsSize({
   const dist = path.resolve('export-size-output')
   const isLocal = pkg.startsWith('.')
 
+  if (output) {
+    if (clean && fs.pathExists(dist))
+      await fs.remove(dist)
+    await fs.ensureDir(dist)
+  }
+
   const dir = isLocal ? path.resolve(pkg) : path.join(dist, 'temp')
   const packageDir = isLocal ? dir : await installTemporaryPackage(pkg, dir, extraDependencies)
 
@@ -61,11 +67,7 @@ export async function getExportsSize({
   const exports = await getAllExports(dir, name)
 
   if (output) {
-    if (clean && fs.pathExists(dist))
-      await fs.remove(dist)
-    await fs.ensureDir(dist)
     await fs.ensureDir(dir)
-
     await fs.ensureDir(path.join(dist, 'bundled'))
     await fs.ensureDir(path.join(dist, 'minified'))
   }
