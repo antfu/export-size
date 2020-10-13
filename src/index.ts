@@ -2,10 +2,10 @@ import path from 'path'
 import fs from 'fs-extra'
 import gzipSize from 'gzip-size'
 import { installTemporaryPackage, loadPackageJSON } from './install'
-import { Bundler } from './esbuild'
 import { getAllExports } from './exports'
+import { getBundler, SupportBundler } from './bunders'
 
-export * from './esbuild'
+export * from './bunders/esbuild'
 export * from './install'
 
 interface ExportsSizeOptions {
@@ -15,27 +15,7 @@ interface ExportsSizeOptions {
   output?: boolean
   reporter?: (name: string, progress: number, total: number) => void
   clean?: boolean
-}
-
-function stringSize(string: string) {
-  return Buffer.byteLength(string, 'utf8')
-}
-
-export async function getExportSize({
-  dir = 'tmp',
-  pkg,
-  name,
-  external = [],
-}) {
-  const bundler = new Bundler(dir, external)
-  await bundler.stop()
-
-  const { bundled, minified } = await bundler.bundle(name, pkg)
-
-  return {
-    rawSize: stringSize(bundled),
-    gzipSize: await gzipSize(minified),
-  }
+  bundler?: SupportBundler
 }
 
 export async function getExportsSize({
@@ -45,6 +25,7 @@ export async function getExportsSize({
   reporter,
   output = true,
   clean = true,
+  bundler: bunderName,
 }: ExportsSizeOptions) {
   const dist = path.resolve('export-size-output')
   const isLocal = pkg.startsWith('.')
@@ -75,9 +56,9 @@ export async function getExportsSize({
   const total = Object.keys(exports).length
   let count = 0
 
-  const result: {name: string; size: number }[] = []
+  const result: { name: string; size: number }[] = []
 
-  const bundler = new Bundler(dir, [...external, ...dependencies])
+  const bundler = getBundler(bunderName, dir, [...external, ...dependencies])
   await bundler.start()
 
   for (const [name, modulePath] of Object.entries(exports)) {

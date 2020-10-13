@@ -1,17 +1,13 @@
 import { Service, startService } from 'esbuild'
+import { Bundler } from './base'
 
 function uint8arrayToStringMethod(myUint8Arr: Uint8Array) {
   return String.fromCharCode.apply(null, myUint8Arr)
 }
 
-export class Bundler {
-  service: Service
-
-  constructor(
-    public dir: string,
-    public external: string[],
-  ) {
-  }
+export class ESBuildBundler extends Bundler {
+  name = 'esbuild'
+  private service: Service
 
   async start() {
     this.service = await startService()
@@ -28,7 +24,6 @@ export class Bundler {
         format: 'esm',
         platform: 'node',
         write: false,
-        pure: [],
         stdin: {
           contents: entry,
           resolveDir: this.dir,
@@ -58,7 +53,7 @@ export class Bundler {
     }
   }
 
-  stop() {
+  async stop() {
     this.service.stop()
   }
 }

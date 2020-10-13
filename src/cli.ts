@@ -4,6 +4,9 @@ import chalk from 'chalk'
 import yargs from 'yargs'
 import { SingleBar, Presets } from 'cli-progress'
 import Table from 'cli-table3'
+import { version } from '../package.json'
+import { SupportBundler } from './bunders'
+import { getPackageVersion } from './utils'
 import { getExportsSize } from '.'
 
 yargs
@@ -36,11 +39,28 @@ yargs
           alias: 'o',
           describe: 'output',
         })
+        .option('bundler', {
+          default: 'esbuild',
+          type: 'string',
+          alias: 'b',
+          choices: ['esbuild', 'rollup'],
+          describe: 'bundler, can be esbuild or rollup',
+        })
     },
     async(args) => {
       if (!args.package) {
         yargs.showHelp()
         return
+      }
+
+      console.log(`export-size  v${version}`)
+
+      if (args.bundler === 'esbuild') {
+        console.log(`esbuild      v${getPackageVersion('esbuild')}`)
+      }
+      else {
+        console.log(`rollup       v${getPackageVersion('rollup')}`)
+        console.log(`terser       v${getPackageVersion('terser')}`)
       }
 
       const bar = new SingleBar({
@@ -58,6 +78,7 @@ yargs
         external: args.external,
         extraDependencies: args.install,
         output: args.output,
+        bundler: args.bundler as SupportBundler,
         reporter(name, value, total) {
           bar.setTotal(total)
           bar.update(value, { name })
