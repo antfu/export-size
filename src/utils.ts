@@ -10,7 +10,8 @@ export function parsePackage(fullname: string) {
 }
 
 export function getPackageVersion(name: string, dir?: string) {
-  const path = require.resolve(`${name}/package.json`, dir ? { paths: [dir] } : undefined)
+  // eslint-disable-next-line no-eval
+  const path = eval('require').resolve(`${name}/package.json`, dir ? { paths: [dir] } : undefined)
   if (path)
     // eslint-disable-next-line no-eval
     return eval('require')(path).version

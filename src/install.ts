@@ -48,7 +48,8 @@ export async function installTemporaryPackage(
 
   run('npm i -s')
 
-  const packageJsonPath = require.resolve(`${name}/package.json`, { paths: [dir] })
+  // eslint-disable-next-line no-eval
+  const packageJsonPath = eval('require').resolve(`${name}/package.json`, { paths: [dir] })
   const packageDir = path.dirname(packageJsonPath)
 
   return packageDir
