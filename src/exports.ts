@@ -84,11 +84,18 @@ function resolveLocal(context: string) {
  * from a given path
  */
 export async function getAllExports(context: string, lookupPath: string, isLocal?: boolean): Promise<Record<string, string>> {
+  const visited = new Set()
+
   const getAllExportsRecursive = async(ctx: string, lookPath: string, local?: boolean) => {
     const resolvedPath = local ? resolveLocal(ctx) : resolver(ctx, lookPath)
 
     if (!resolvedPath)
       return []
+    
+    if (visited.has(resolvedPath))
+      return []
+    
+    visited.add(resolvedPath)
 
     const resolvedExports = {}
     const code = await fs.readFile(resolvedPath, 'utf8')

@@ -48,8 +48,7 @@ export async function installTemporaryPackage(
 
   run('npm i -s')
 
-  const packageJsonPath = path.join(dir, 'node_modules', name)
-  const packageDir = path.dirname(packageJsonPath)
+  const packageDir = path.join(dir, 'node_modules', name)
 
   return packageDir
 }
