@@ -1,3 +1,5 @@
+import { dependencies } from '../package.json'
+
 export function parsePackage(fullname: string) {
   const parts = fullname.split('@')
   let name = parts[0]
@@ -10,10 +12,5 @@ export function parsePackage(fullname: string) {
 }
 
 export function getPackageVersion(name: string, dir?: string) {
-  // eslint-disable-next-line no-eval
-  const path = eval('require').resolve(`${name}/package.json`, dir ? { paths: [dir] } : undefined)
-  if (path)
-    // eslint-disable-next-line no-eval
-    return eval('require')(path).version
-  return undefined
+  return dependencies[name]
 }

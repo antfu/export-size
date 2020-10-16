@@ -45,10 +45,9 @@ export async function getExportsSize({
     packageJSON,
   } = await loadPackageJSON(packageDir)
 
-  const exports = await getAllExports(dir, name)
+  const exports = await getAllExports(dir, name, isLocal)
 
   if (output) {
-    await fs.ensureDir(dir)
     await fs.ensureDir(path.join(dist, 'bundled'))
     await fs.ensureDir(path.join(dist, 'minified'))
   }

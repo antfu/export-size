@@ -67,21 +67,25 @@ const resolver = enhancedResolve.create.sync({
     '.js',
     '.mjs',
     '.json',
-    '.css',
-    '.sass',
-    '.scss',
   ],
-  modules: ['node_modules', '.'],
+  modules: ['node_modules'],
   mainFields: ['module', 'main'],
 })
+
+function resolveLocal(context: string) {
+  const pkg = JSON.parse(fs.readFileSync(path.join(context, 'package.json'), 'utf-8'))
+  const index = pkg.module || pkg.main
+  if (index)
+    return path.join(context, index)
+}
 
 /**
  * Recursively get all exports starting
  * from a given path
  */
-export async function getAllExports(context: string, lookupPath: string): Promise<Record<string, string>> {
-  const getAllExportsRecursive = async(ctx, lookPath) => {
-    const resolvedPath = resolver(ctx, lookPath)
+export async function getAllExports(context: string, lookupPath: string, isLocal?: boolean): Promise<Record<string, string>> {
+  const getAllExportsRecursive = async(ctx: string, lookPath: string, local?: boolean) => {
+    const resolvedPath = local ? resolveLocal(ctx) : resolver(ctx, lookPath)
 
     if (!resolvedPath)
       return []
@@ -111,6 +115,6 @@ export async function getAllExports(context: string, lookupPath: string): Promis
     return resolvedExports
   }
 
-  const allExports = await getAllExportsRecursive(context, lookupPath)
+  const allExports = await getAllExportsRecursive(context, lookupPath, isLocal)
   return allExports
 }
