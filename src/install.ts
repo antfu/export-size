@@ -10,6 +10,7 @@ export async function loadPackageJSON(packageDir: string) {
     new Set([
       ...Object.keys(packageJSON.dependencies || {}),
       ...Object.keys(packageJSON.peerDependencies || {}),
+      ...Object.keys(packageJSON.optionalDependencies || {}),
       ...Object.keys(packageJSON.devDependencies || {}),
     ]),
   )
