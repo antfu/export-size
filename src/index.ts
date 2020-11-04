@@ -16,7 +16,7 @@ export { version }
 export * from './bunders/esbuild'
 export * from './install'
 
-interface ExportsSizeOptions {
+export interface ExportsSizeOptions {
   pkg: string
   external?: string[]
   extraDependencies?: string[]
@@ -26,13 +26,13 @@ interface ExportsSizeOptions {
   bundler?: SupportBundler
 }
 
-interface MetaInfo {
+export interface MetaInfo {
   name: string
   dependencies: string[]
   versions: Record<string, string>
 }
 
-interface ExportsInfo {
+export interface ExportsInfo {
   name: string
   path: string
   bundled: number

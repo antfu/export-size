@@ -91,10 +91,10 @@ export async function getAllExports(context: string, lookupPath: string, isLocal
 
     if (!resolvedPath)
       return []
-    
+
     if (visited.has(resolvedPath))
       return []
-    
+
     visited.add(resolvedPath)
 
     const resolvedExports = {}
