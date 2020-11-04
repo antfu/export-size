@@ -2,3 +2,4 @@ node_modules
 tmp
 dist
 export-size-output
+export-size-report.json

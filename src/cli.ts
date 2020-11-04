@@ -1,13 +1,11 @@
 /* eslint-disable no-unused-expressions */
-import filesize from 'filesize'
 import chalk from 'chalk'
 import yargs from 'yargs'
 import { SingleBar, Presets } from 'cli-progress'
 import Table from 'cli-table3'
-import { version } from '../package.json'
+import fs from 'fs-extra'
 import { SupportBundler } from './bunders'
-import { getPackageVersion } from './utils'
-import { getExportsSize } from '.'
+import { getExportsSize, readableSize } from '.'
 
 yargs
   .scriptName('export-size')
@@ -39,6 +37,12 @@ yargs
           alias: 'o',
           describe: 'output',
         })
+        .option('report', {
+          default: false,
+          type: 'boolean',
+          alias: 'r',
+          describe: 'report json file',
+        })
         .option('bundler', {
           default: 'esbuild',
           type: 'string',
@@ -53,16 +57,6 @@ yargs
         return
       }
 
-      console.log(`export-size  v${version}`)
-
-      if (args.bundler === 'esbuild') {
-        console.log(`esbuild      v${getPackageVersion('esbuild')}`)
-      }
-      else {
-        console.log(`rollup       v${getPackageVersion('rollup')}`)
-        console.log(`terser       v${getPackageVersion('terser')}`)
-      }
-
       const bar = new SingleBar({
         clearOnComplete: true,
         hideCursor: true,
@@ -73,7 +67,7 @@ yargs
 
       bar.start(0, 0, { name: '' })
 
-      const { result, packageJSON, name } = await getExportsSize({
+      const { exports, packageJSON, meta } = await getExportsSize({
         pkg: args.package,
         external: args.external,
         extraDependencies: args.install,
@@ -87,22 +81,36 @@ yargs
 
       bar.stop()
 
+      // versions
+      Object
+        .entries(meta.versions)
+        .forEach(([name, version]) => {
+          console.log(chalk.gray(`${name.padEnd(15)}v${version}`))
+        })
+
       const table = new Table({
         chars: { mid: '', 'left-mid': '', 'mid-mid': '', 'right-mid': '' },
         head: ['export\n', 'min+gzip\n'],
         colAligns: ['left', 'right'],
       })
 
-      for (const { name, size } of result)
-        table.push([name, filesize(size)])
+      for (const { name, minzipped } of exports)
+        table.push([name, readableSize(minzipped)])
 
       console.log()
-      console.log(`${chalk.green(name)} v${packageJSON.version}`)
+      console.log(`${chalk.green(meta.name)} v${packageJSON.version}`)
       if (packageJSON._shasum)
         console.log(chalk.gray(`sha ${packageJSON._shasum}`))
       console.log()
       console.log(table.toString())
       console.log()
+
+      if (args.report) {
+        const filepath = './export-size-report.json'
+        await fs.writeJSON(filepath, { meta, exports }, { spaces: 2 })
+        console.log(chalk.yellow(`report saved to ${chalk.gray(filepath)}`))
+        console.log()
+      }
     },
   )
   .showHelpOnFail(false)

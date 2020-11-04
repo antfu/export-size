@@ -1,9 +1,16 @@
 import path from 'path'
 import fs from 'fs-extra'
 import gzipSize from 'gzip-size'
+import { version } from '../package.json'
 import { installTemporaryPackage, loadPackageJSON } from './install'
 import { getAllExports } from './exports'
 import { getBundler, SupportBundler } from './bunders'
+import { getPackageVersion } from './utils'
+
+export { default as readableSize } from 'filesize'
+export { default as gzipSize } from 'gzip-size'
+
+export { version }
 
 export * from './bunders/esbuild'
 export * from './install'
@@ -16,6 +23,19 @@ interface ExportsSizeOptions {
   reporter?: (name: string, progress: number, total: number) => void
   clean?: boolean
   bundler?: SupportBundler
+}
+
+interface MetaInfo {
+  name: string
+  dependencies: string[]
+  versions: Record<string, string>
+}
+
+interface ExportsInfo {
+  name: string
+  path: string
+  bundled: number
+  minzipped: number
 }
 
 export async function getExportsSize({
@@ -45,22 +65,39 @@ export async function getExportsSize({
     packageJSON,
   } = await loadPackageJSON(packageDir)
 
-  const exports = await getAllExports(dir, name, isLocal)
+  const exportsPaths = await getAllExports(dir, name, isLocal)
 
   if (output) {
     await fs.ensureDir(path.join(dist, 'bundled'))
     await fs.ensureDir(path.join(dist, 'minified'))
   }
 
-  const total = Object.keys(exports).length
+  const meta: MetaInfo = {
+    name,
+    dependencies,
+    versions: {},
+  }
+
+  meta.versions['export-size'] = version
+
+  if (bunderName === 'esbuild') {
+    meta.versions.esbuild = getPackageVersion('esbuild')
+  }
+  else {
+    meta.versions.rollup = getPackageVersion('rollup')
+    meta.versions.terser = getPackageVersion('terser')
+  }
+
+  const total = Object.keys(exportsPaths).length
   let count = 0
 
-  const result: { name: string; size: number }[] = []
+  const exports: ExportsInfo[] = []
 
   const bundler = getBundler(bunderName, dir, [...external, ...dependencies])
+
   await bundler.start()
 
-  for (const [name, modulePath] of Object.entries(exports)) {
+  for (const [name, modulePath] of Object.entries(exportsPaths)) {
     const { bundled, minified } = await bundler.bundle(name, path.resolve(dir, modulePath))
 
     if (output) {
@@ -68,25 +105,29 @@ export async function getExportsSize({
       await fs.writeFile(path.join(dist, 'minified', `${name}.min.js`), minified, 'utf-8')
     }
 
-    const size = await gzipSize(minified)
+    const bundledSize = bundled.length
+    const minzippedSize = await gzipSize(minified)
 
     count += 1
 
     if (reporter)
       reporter(name, count, total)
 
-    result.push({ name, size })
+    exports.push({
+      name,
+      path: modulePath,
+      minzipped: minzippedSize,
+      bundled: bundledSize,
+    })
   }
 
   bundler.stop()
 
-  result.sort((a, b) => b.size - a.size)
+  exports.sort((a, b) => b.minzipped - a.minzipped)
 
   return {
-    result,
+    meta,
     exports,
-    name,
-    dependencies,
     packageJSON,
   }
 }
