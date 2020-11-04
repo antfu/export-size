@@ -1,6 +1,6 @@
 import path from 'path'
 import fs from 'fs-extra'
-import gzipSize from 'gzip-size'
+import brotliSize from 'brotli-size'
 import { version } from '../package.json'
 import { installTemporaryPackage, loadPackageJSON } from './install'
 import { getAllExports } from './exports'
@@ -9,6 +9,7 @@ import { getPackageVersion } from './utils'
 
 export { default as readableSize } from 'filesize'
 export { default as gzipSize } from 'gzip-size'
+export { default as brotliSize } from 'brotli-size'
 
 export { version }
 
@@ -35,6 +36,7 @@ interface ExportsInfo {
   name: string
   path: string
   bundled: number
+  minified: number
   minzipped: number
 }
 
@@ -87,6 +89,7 @@ export async function getExportsSize({
     meta.versions.rollup = getPackageVersion('rollup')
     meta.versions.terser = getPackageVersion('terser')
   }
+  meta.versions['brotli-size'] = getPackageVersion('brotli-size')
 
   const total = Object.keys(exportsPaths).length
   let count = 0
@@ -106,7 +109,8 @@ export async function getExportsSize({
     }
 
     const bundledSize = bundled.length
-    const minzippedSize = await gzipSize(minified)
+    const minifiedSize = minified.length
+    const minzippedSize = await brotliSize(minified)
 
     count += 1
 
@@ -116,6 +120,7 @@ export async function getExportsSize({
     exports.push({
       name,
       path: modulePath,
+      minified: minifiedSize,
       minzipped: minzippedSize,
       bundled: bundledSize,
     })
