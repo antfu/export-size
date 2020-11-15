@@ -36,7 +36,7 @@ export class ESBuildBundler extends Bundler {
         .replace(/\/\*[\s\S]*?\*\/\n?/mg, '') // remove comments
 
       const minifiedResult = await this.service.transform(bundled, { minify: true, format: 'esm', loader: 'js' })
-      const minified = minifiedResult.js
+      const minified = minifiedResult.code
       return {
         bundled,
         minified,
