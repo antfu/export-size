@@ -19,6 +19,7 @@ export * from './install'
 export interface ExportsSizeOptions {
   pkg: string
   external?: string[]
+  includes?: string[]
   extraDependencies?: string[]
   output?: boolean
   reporter?: (name: string, progress: number, total: number) => void
@@ -43,6 +44,7 @@ export interface ExportsInfo {
 export async function getExportsSize({
   pkg,
   external = [],
+  includes = [],
   extraDependencies = [],
   reporter,
   output = true,
@@ -96,7 +98,8 @@ export async function getExportsSize({
 
   const exports: ExportsInfo[] = []
 
-  const bundler = getBundler(bunderName, dir, [...external, ...dependencies])
+  const externals = [...external, ...dependencies].filter(i => !includes.includes(i))
+  const bundler = getBundler(bunderName, dir, externals)
 
   await bundler.start()
 
