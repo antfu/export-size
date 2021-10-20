@@ -29,7 +29,7 @@ export async function installTemporaryPackage(
   extra: string[] = [],
 ) {
   function run(cmd: string) {
-    execSync(cmd, { cwd: dir })
+    execSync(cmd, { cwd: dir, stdio: 'inherit' })
   }
 
   const { name } = parsePackage(pkg)

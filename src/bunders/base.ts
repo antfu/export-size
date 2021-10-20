@@ -8,9 +8,9 @@ export abstract class Bundler {
   ) {
   }
 
-  abstract async start(): Promise<void>
-  abstract async stop(): Promise<void>
-  abstract async bundle(exportName: string, exportPath: string): Promise<{
+  abstract start(): Promise<void>
+  abstract stop(): Promise<void>
+  abstract bundle(exportName: string, exportPath: string): Promise<{
     bundled?: string
     minified: string
   }>

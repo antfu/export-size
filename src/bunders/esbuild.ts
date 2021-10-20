@@ -1,4 +1,4 @@
-import { Service, startService } from 'esbuild'
+import { build, transform } from 'esbuild'
 import { Bundler } from './base'
 
 function uint8arrayToStringMethod(myUint8Arr: Uint8Array) {
@@ -7,10 +7,7 @@ function uint8arrayToStringMethod(myUint8Arr: Uint8Array) {
 
 export class ESBuildBundler extends Bundler {
   name = 'esbuild'
-  private service: Service
-
   async start() {
-    this.service = await startService()
   }
 
   async bundle(exportName: string, exportPath: string) {
@@ -18,7 +15,7 @@ export class ESBuildBundler extends Bundler {
       ? `export { default as _ } from '${exportPath}'`
       : `export { ${exportName} as _ } from '${exportPath}'`
     try {
-      const bundledResult = await this.service.build({
+      const bundledResult = await build({
         bundle: true,
         minify: false,
         format: 'esm',
@@ -35,7 +32,7 @@ export class ESBuildBundler extends Bundler {
       const bundled = uint8arrayToStringMethod(bundledResult.outputFiles[0].contents)
         .replace(/\/\*[\s\S]*?\*\/\n?/mg, '') // remove comments
 
-      const minifiedResult = await this.service.transform(bundled, { minify: true, format: 'esm', loader: 'js' })
+      const minifiedResult = await transform(bundled, { minify: true, format: 'esm', loader: 'js' })
       const minified = minifiedResult.code
       return {
         bundled,
@@ -43,8 +40,8 @@ export class ESBuildBundler extends Bundler {
       }
     }
     catch (e) {
-      console.log()
-      console.log(entry)
+      console.error()
+      console.error(entry)
       console.error(e)
       return {
         bundled: '',
@@ -54,6 +51,5 @@ export class ESBuildBundler extends Bundler {
   }
 
   async stop() {
-    this.service.stop()
   }
 }

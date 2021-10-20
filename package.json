@@ -1,11 +1,17 @@
 {
   "name": "export-size",
   "version": "0.4.0",
+  "homepage": "https://github.com/antfu/export-size#readme",
+  "bugs": "https://github.com/antfu/export-size/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antfu/export-size.git"
+  },
+  "license": "MIT",
+  "author": "Anthony Fu <anthonyfu117@hotmail.com>",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
-  "author": "Anthony Fu <anthonyfu117@hotmail.com>",
-  "license": "MIT",
   "bin": {
     "export-size": "bin/export-size.js"
   },
@@ -14,48 +20,42 @@
     "src",
     "bin"
   ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/antfu/export-size.git"
-  },
-  "bugs": "https://github.com/antfu/export-size/issues",
-  "homepage": "https://github.com/antfu/export-size#readme",
   "scripts": {
-    "dev": "esno src/cli.ts",
     "build": "tsup src/index.ts src/cli.ts --format cjs,esm --dts",
+    "dev": "esno src/cli.ts",
     "prepublishOnly": "npm run build",
     "release": "npx bumpp --commit --push --tag && npm publish"
   },
-  "devDependencies": {
-    "@antfu/eslint-config": "^0.4.3",
-    "@types/cli-progress": "^3.8.0",
-    "@types/fs-extra": "^9.0.4",
-    "@types/node": "^14.14.7",
-    "@types/yargs": "^15.0.9",
-    "eslint": "^7.13.0",
-    "esno": "^0.2.4",
-    "lodash-es": "^4.17.15",
-    "tsup": "^3.8.0",
-    "typescript": "^4.0.5"
-  },
-  "dependencies": {
-    "@babel/parser": "^7.12.5",
-    "@babel/traverse": "^7.12.5",
-    "@rollup/plugin-node-resolve": "^10.0.0",
-    "brotli-size": "^4.0.0",
-    "chalk": "^4.1.0",
-    "cli-progress": "^3.8.2",
-    "cli-table3": "^0.6.0",
-    "enhanced-resolve": "^5.3.1",
-    "esbuild": "^0.8.7",
-    "filesize": "^6.1.0",
-    "fs-extra": "^9.0.1",
-    "gzip-size": "^5.1.1",
-    "rollup": "^2.33.2",
-    "terser": "^5.3.8",
-    "yargs": "^16.1.1"
-  },
   "eslintConfig": {
     "extends": "@antfu"
+  },
+  "dependencies": {
+    "@babel/parser": "^7.15.8",
+    "@babel/traverse": "^7.15.4",
+    "@rollup/plugin-node-resolve": "^13.0.6",
+    "brotli-size": "^4.0.0",
+    "chalk": "^4.1.2",
+    "cli-progress": "^3.9.1",
+    "cli-table3": "^0.6.0",
+    "enhanced-resolve": "^5.8.3",
+    "esbuild": "^0.13.8",
+    "filesize": "^8.0.3",
+    "fs-extra": "^10.0.0",
+    "gzip-size": "^6.0.0",
+    "rollup": "^2.58.0",
+    "terser": "^5.9.0",
+    "yargs": "^17.2.1"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^0.10.0",
+    "@types/cli-progress": "^3.9.2",
+    "@types/fs-extra": "^9.0.13",
+    "@types/node": "^16.11.1",
+    "@types/yargs": "^17.0.4",
+    "eslint": "^8.0.1",
+    "esno": "^0.10.1",
+    "lodash-es": "^4.17.21",
+    "tsup": "^5.4.2",
+    "typescript": "^4.4.4"
   }
 }

@@ -85,11 +85,11 @@ yargs
       Object
         .entries(meta.versions)
         .forEach(([name, version]) => {
-          console.log(chalk.gray(`${name.padEnd(15)}v${version}`))
+          console.log(chalk.gray(`${name.padEnd(15)}v${version.replace(/^\^/, '')}`))
         })
 
       const table = new Table({
-        chars: { mid: '', 'left-mid': '', 'mid-mid': '', 'right-mid': '' },
+        chars: { 'mid': '', 'left-mid': '', 'mid-mid': '', 'right-mid': '' },
         head: ['export\n', 'min+gzip\n'],
         colAligns: ['left', 'right'],
       })
