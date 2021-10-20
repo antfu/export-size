@@ -1,6 +1,6 @@
 {
   "name": "export-size",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "homepage": "https://github.com/antfu/export-size#readme",
   "bugs": "https://github.com/antfu/export-size/issues",
   "repository": {
@@ -52,6 +52,7 @@
     "@types/fs-extra": "^9.0.13",
     "@types/node": "^16.11.1",
     "@types/yargs": "^17.0.4",
+    "bumpp": "^7.1.1",
     "eslint": "^8.0.1",
     "esno": "^0.10.1",
     "lodash-es": "^4.17.21",
