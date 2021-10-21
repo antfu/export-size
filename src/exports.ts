@@ -69,6 +69,7 @@ const resolver = enhancedResolve.create.sync({
     '.json',
   ],
   modules: ['node_modules'],
+  conditionNames: ["import", "require"],
   mainFields: ['module', 'main'],
 })
 
