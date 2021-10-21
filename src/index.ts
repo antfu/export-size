@@ -104,7 +104,7 @@ export async function getExportsSize({
   await bundler.start()
 
   for (const [name, modulePath] of Object.entries(exportsPaths)) {
-    const { bundled, minified } = await bundler.bundle(name, path.resolve(dir, modulePath))
+    const { bundled, minified } = await bundler.bundle(name, path.resolve(dir, modulePath).replace(/\\/g, '/'))
 
     if (output) {
       await fs.writeFile(path.join(dist, 'bundled', `${name}.js`), bundled, 'utf-8')
