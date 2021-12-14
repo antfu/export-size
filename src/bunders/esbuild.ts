@@ -1,10 +1,6 @@
 import { build, transform } from 'esbuild'
 import { Bundler } from './base'
 
-function uint8arrayToStringMethod(myUint8Arr: Uint8Array) {
-  return String.fromCharCode.apply(null, myUint8Arr)
-}
-
 export class ESBuildBundler extends Bundler {
   name = 'esbuild'
   async start() {
@@ -28,10 +24,9 @@ export class ESBuildBundler extends Bundler {
         },
         mainFields: ['module', 'browser', 'main'],
         external: this.external,
+        legalComments: 'none',
       })
-      const bundled = uint8arrayToStringMethod(bundledResult.outputFiles[0].contents)
-        .replace(/\/\*[\s\S]*?\*\/\n?/mg, '') // remove comments
-
+      const bundled = bundledResult.outputFiles[0].text
       const minifiedResult = await transform(bundled, { minify: true, format: 'esm', loader: 'js' })
       const minified = minifiedResult.code
       return {
