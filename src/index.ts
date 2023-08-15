@@ -1,10 +1,13 @@
-import path from 'path'
+/* eslint-disable antfu/no-cjs-exports */
+
+import path from 'node:path'
 import fs from 'fs-extra'
 import brotliSize from 'brotli-size'
 import { version } from '../package.json'
 import { installTemporaryPackage, loadPackageJSON } from './install'
 import { getAllExports } from './exports'
-import { getBundler, SupportBundler } from './bunders'
+import type { SupportBundler } from './bunders'
+import { getBundler } from './bunders'
 import { getPackageVersion } from './utils'
 
 export { filesize as readableSize } from 'filesize'
@@ -55,7 +58,8 @@ export async function getExportsSize({
   const isLocal = pkg.startsWith('.')
 
   if (output) {
-    if (clean && fs.pathExists(dist)) await fs.remove(dist)
+    if (clean && fs.pathExists(dist))
+      await fs.remove(dist)
     await fs.ensureDir(dist)
   }
 
@@ -127,7 +131,8 @@ export async function getExportsSize({
 
     count += 1
 
-    if (reporter) reporter(name, count, total)
+    if (reporter)
+      reporter(name, count, total)
 
     exports.push({
       name,

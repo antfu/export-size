@@ -1,4 +1,5 @@
-import { rollup, RollupCache, VERSION } from 'rollup'
+import type { RollupCache } from 'rollup'
+import { VERSION, rollup } from 'rollup'
 import nodeResolve from '@rollup/plugin-node-resolve'
 import { minify } from 'terser'
 import { parsePackage } from '../utils'

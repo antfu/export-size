@@ -1,4 +1,6 @@
-import path from 'path'
+/* eslint-disable antfu/no-cjs-exports */
+
+import path from 'node:path'
 import { parse } from '@babel/parser'
 import traverse from '@babel/traverse'
 import fs from 'fs-extra'
@@ -87,7 +89,7 @@ function resolveLocal(context: string) {
 export async function getAllExports(context: string, lookupPath: string, isLocal?: boolean): Promise<Record<string, string>> {
   const visited = new Set()
 
-  const getAllExportsRecursive = async(ctx: string, lookPath: string, local?: boolean) => {
+  const getAllExportsRecursive = async (ctx: string, lookPath: string, local?: boolean) => {
     const resolvedPath = local ? resolveLocal(ctx) : resolver(ctx, lookPath)
 
     if (!resolvedPath)
@@ -109,7 +111,7 @@ export async function getAllExports(context: string, lookupPath: string, isLocal
       resolvedExports[exp] = relativePath
     })
 
-    const promises = exportAllLocations.map(async(location) => {
+    const promises = exportAllLocations.map(async (location) => {
       const exports = await getAllExportsRecursive(
         path.dirname(resolvedPath),
         location,

@@ -11,6 +11,6 @@ export function parsePackage(fullname: string) {
   return { name, version }
 }
 
-export function getPackageVersion(name: string, dir?: string) {
+export function getPackageVersion(name: string) {
   return dependencies[name]
 }
