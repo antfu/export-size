@@ -34,36 +34,39 @@
     "release": "npx bumpp --commit --push --tag && npm publish"
   },
   "dependencies": {
-    "@babel/parser": "^7.15.8",
-    "@babel/traverse": "^7.15.4",
-    "@rollup/plugin-node-resolve": "^13.0.6",
+    "@babel/parser": "^7.22.10",
+    "@babel/traverse": "^7.22.10",
+    "@rollup/plugin-node-resolve": "^15.1.0",
     "brotli-size": "^4.0.0",
     "chalk": "^4.1.2",
-    "cli-progress": "^3.9.1",
-    "cli-table3": "^0.6.0",
-    "enhanced-resolve": "^5.8.3",
-    "esbuild": "^0.13.8",
-    "filesize": "^8.0.3",
-    "fs-extra": "^10.0.0",
-    "gzip-size": "^6.0.0",
-    "rollup": "^2.58.0",
-    "terser": "^5.9.0",
-    "yargs": "^17.2.1"
+    "cli-progress": "^3.12.0",
+    "cli-table3": "^0.6.3",
+    "enhanced-resolve": "^5.15.0",
+    "esbuild": "^0.19.2",
+    "filesize": "^10.0.12",
+    "fs-extra": "^11.1.1",
+    "gzip-size": "^7.0.0",
+    "rollup": "^3.28.0",
+    "terser": "^5.19.2",
+    "yargs": "^17.7.2"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^0.10.0",
-    "@types/cli-progress": "^3.9.2",
-    "@types/fs-extra": "^9.0.13",
-    "@types/node": "^16.11.1",
-    "@types/yargs": "^17.0.4",
-    "bumpp": "^7.1.1",
-    "eslint": "^8.0.1",
-    "esno": "^0.10.1",
+    "@antfu/eslint-config": "^0.40.2",
+    "@types/cli-progress": "^3.11.0",
+    "@types/fs-extra": "^11.0.1",
+    "@types/node": "^20.5.0",
+    "@types/yargs": "^17.0.24",
+    "bumpp": "^9.1.1",
+    "eslint": "^8.47.0",
+    "esno": "^0.17.0",
     "lodash-es": "^4.17.21",
-    "tsup": "^5.4.2",
-    "typescript": "^4.4.4"
+    "tsup": "^7.2.0",
+    "typescript": "^5.1.6"
   },
   "eslintConfig": {
-    "extends": "@antfu"
+    "extends": "@antfu",
+    "rules": {
+      "no-console": "off"
+    }
   }
 }
