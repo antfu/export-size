@@ -3,31 +3,35 @@
   "version": "0.5.2",
   "homepage": "https://github.com/antfu/export-size#readme",
   "bugs": "https://github.com/antfu/export-size/issues",
+  "license": "MIT",
+  "packageManager": "pnpm@8.6.12",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/antfu/export-size.git"
   },
-  "license": "MIT",
   "author": "Anthony Fu <anthonyfu117@hotmail.com>",
+  "files": [
+    "dist",
+    "bin"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "bin": {
     "export-size": "bin/export-size.js"
   },
-  "files": [
-    "dist",
-    "src",
-    "bin"
-  ],
   "scripts": {
     "build": "tsup src/index.ts src/cli.ts --format cjs,esm --dts",
     "dev": "esno src/cli.ts",
     "prepublishOnly": "npm run build",
     "release": "npx bumpp --commit --push --tag && npm publish"
-  },
-  "eslintConfig": {
-    "extends": "@antfu"
   },
   "dependencies": {
     "@babel/parser": "^7.15.8",
@@ -58,5 +62,8 @@
     "lodash-es": "^4.17.21",
     "tsup": "^5.4.2",
     "typescript": "^4.4.4"
+  },
+  "eslintConfig": {
+    "extends": "@antfu"
   }
 }
