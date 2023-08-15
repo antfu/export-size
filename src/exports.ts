@@ -105,10 +105,7 @@ export async function getAllExports(context: string, lookupPath: string, isLocal
     const { exports, exportAllLocations } = getExportsDetails(code)
 
     exports.forEach((exp) => {
-      const relativePath = resolvedPath.substring(
-        resolvedPath.indexOf(context) + context.length + 1,
-      )
-      resolvedExports[exp] = relativePath
+      resolvedExports[exp] = resolvedPath
     })
 
     const promises = exportAllLocations.map(async (location) => {

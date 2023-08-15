@@ -55,7 +55,7 @@ export async function getExportsSize({
   bundler: bunderName,
 }: ExportsSizeOptions) {
   const dist = path.resolve('export-size-output')
-  const isLocal = pkg.startsWith('.')
+  const isLocal = pkg[0] === '.' || pkg[0] === '/'
 
   if (output) {
     if (clean && fs.pathExists(dist))
