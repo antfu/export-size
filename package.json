@@ -12,7 +12,6 @@
   "bugs": "https://github.com/antfu/export-size/issues",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
     }
@@ -28,7 +27,7 @@
     "bin"
   ],
   "scripts": {
-    "build": "tsup src/index.ts src/cli.ts --format cjs,esm --dts",
+    "build": "tsup",
     "dev": "esno src/cli.ts",
     "prepublishOnly": "npm run build",
     "release": "npx bumpp --commit --push --tag && npm publish"
@@ -37,7 +36,6 @@
     "@babel/parser": "^7.22.10",
     "@babel/traverse": "^7.22.10",
     "@rollup/plugin-node-resolve": "^15.1.0",
-    "brotli-size": "^4.0.0",
     "chalk": "^4.1.2",
     "cli-progress": "^3.12.0",
     "cli-table3": "^0.6.3",
@@ -45,7 +43,6 @@
     "esbuild": "^0.19.2",
     "filesize": "^10.0.12",
     "fs-extra": "^11.1.1",
-    "gzip-size": "^7.0.0",
     "rollup": "^3.28.0",
     "terser": "^5.19.2",
     "yargs": "^17.7.2"

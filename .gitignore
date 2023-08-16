@@ -3,3 +3,4 @@ tmp
 dist
 export-size-output
 export-size-report.json
+.DS_Store

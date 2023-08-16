@@ -1,8 +1,9 @@
 /* eslint-disable antfu/no-cjs-exports */
 
 import path from 'node:path'
+import { brotliCompress, gzip } from 'node:zlib'
+import { promisify } from 'node:util'
 import fs from 'fs-extra'
-import brotliSize from 'brotli-size'
 import { version } from '../package.json'
 import { installTemporaryPackage, loadPackageJSON } from './install'
 import { getAllExports } from './exports'
@@ -11,8 +12,13 @@ import { getBundler } from './bunders'
 import { getPackageVersion } from './utils'
 
 export { filesize as readableSize } from 'filesize'
-export { default as gzipSize } from 'gzip-size'
-export { default as brotliSize } from 'brotli-size'
+export async function brotliSize(input: string) {
+  return (await promisify(brotliCompress)(input)).length
+}
+
+export async function gzipSize(input: string) {
+  return (await promisify(gzip)(input)).length
+}
 
 export { version }
 

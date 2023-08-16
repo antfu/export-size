@@ -20,7 +20,7 @@ function getExportsDetails(code: string) {
   const exportAllLocations = []
   let exportsList = []
 
-  traverse(ast, {
+    ;(traverse.default || traverse)(ast, {
     ExportNamedDeclaration(path) {
       const { specifiers, declaration } = path.node
       exportsList = exportsList.concat(
