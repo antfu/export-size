@@ -1,6 +1,6 @@
 {
-  "name": "export-size",
-  "version": "0.5.2",
+  "name": "@sxzz/export-size",
+  "version": "0.6.0",
   "packageManager": "pnpm@8.6.12",
   "author": "Anthony Fu <anthonyfu117@hotmail.com>",
   "license": "MIT",
