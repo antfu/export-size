@@ -20,7 +20,7 @@
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "bin": {
-    "export-size": "bin/export-size.js"
+    "export-size": "bin/export-size.mjs"
   },
   "files": [
     "dist",
