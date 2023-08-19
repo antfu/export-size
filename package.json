@@ -30,7 +30,7 @@
     "build": "tsup",
     "dev": "esno src/cli.ts",
     "prepublishOnly": "npm run build",
-    "release": "npx bumpp --commit --push --tag && npm publish"
+    "release": "bumpp && npm publish"
   },
   "dependencies": {
     "@babel/parser": "^7.22.10",
