@@ -1,10 +1,10 @@
 /* eslint-disable no-unused-expressions */
 import chalk from 'chalk'
 import yargs from 'yargs'
-import { SingleBar, Presets } from 'cli-progress'
+import { Presets, SingleBar } from 'cli-progress'
 import Table from 'cli-table3'
 import fs from 'fs-extra'
-import { SupportBundler } from './bunders'
+import type { SupportBundler } from './bunders'
 import { getExportsSize, readableSize } from '.'
 
 yargs
@@ -51,7 +51,7 @@ yargs
           describe: 'bundler, can be esbuild or rollup',
         })
     },
-    async(args) => {
+    async (args) => {
       if (!args.package) {
         yargs.showHelp()
         return
@@ -69,17 +69,17 @@ yargs
 
       const { exports, packageJSON, meta } = await getExportsSize({
         pkg: args.package,
-        external: args.external,
-        extraDependencies: args.install,
+        external: args.external as string[],
+        extraDependencies: args.install as string[],
         output: args.output,
         bundler: args.bundler as SupportBundler,
         reporter(name, value, total) {
           bar.setTotal(total)
           bar.update(value, { name })
         },
+      }).finally(() => {
+        bar.stop()
       })
-
-      bar.stop()
 
       // versions
       Object
@@ -90,7 +90,7 @@ yargs
 
       const table = new Table({
         chars: { 'mid': '', 'left-mid': '', 'mid-mid': '', 'right-mid': '' },
-        head: ['export\n', 'min+gzip\n'],
+        head: ['export\n', 'min+brotli\n'],
         colAligns: ['left', 'right'],
       })
 

@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'node:path'
 import { parse } from '@babel/parser'
 import traverse from '@babel/traverse'
 import fs from 'fs-extra'
@@ -18,7 +18,7 @@ function getExportsDetails(code: string) {
   const exportAllLocations = []
   let exportsList = []
 
-  traverse(ast, {
+    ;(traverse.default || traverse)(ast, {
     ExportNamedDeclaration(path) {
       const { specifiers, declaration } = path.node
       exportsList = exportsList.concat(
@@ -87,29 +87,26 @@ function resolveLocal(context: string) {
 export async function getAllExports(context: string, lookupPath: string, isLocal?: boolean): Promise<Record<string, string>> {
   const visited = new Set()
 
-  const getAllExportsRecursive = async(ctx: string, lookPath: string, local?: boolean) => {
+  const getAllExportsRecursive = async (ctx: string, lookPath: string, local?: boolean) => {
     const resolvedPath = local ? resolveLocal(ctx) : resolver(ctx, lookPath)
 
     if (!resolvedPath)
-      return []
+      return {}
 
     if (visited.has(resolvedPath))
-      return []
+      return {}
 
     visited.add(resolvedPath)
 
-    const resolvedExports = {}
+    const resolvedExports: Record<string, string> = {}
     const code = await fs.readFile(resolvedPath, 'utf8')
     const { exports, exportAllLocations } = getExportsDetails(code)
 
     exports.forEach((exp) => {
-      const relativePath = resolvedPath.substring(
-        resolvedPath.indexOf(context) + context.length + 1,
-      )
-      resolvedExports[exp] = relativePath
+      resolvedExports[exp] = path.relative(context, resolvedPath)
     })
 
-    const promises = exportAllLocations.map(async(location) => {
+    const promises = exportAllLocations.map(async (location) => {
       const exports = await getAllExportsRecursive(
         path.dirname(resolvedPath),
         location,

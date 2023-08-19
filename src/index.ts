@@ -1,15 +1,22 @@
-import path from 'path'
+import path from 'node:path'
+import { brotliCompress, gzip } from 'node:zlib'
+import { promisify } from 'node:util'
 import fs from 'fs-extra'
-import brotliSize from 'brotli-size'
 import { version } from '../package.json'
 import { installTemporaryPackage, loadPackageJSON } from './install'
 import { getAllExports } from './exports'
-import { getBundler, SupportBundler } from './bunders'
+import type { SupportBundler } from './bunders'
+import { getBundler } from './bunders'
 import { getPackageVersion } from './utils'
 
-export { default as readableSize } from 'filesize'
-export { default as gzipSize } from 'gzip-size'
-export { default as brotliSize } from 'brotli-size'
+export { filesize as readableSize } from 'filesize'
+export async function brotliSize(input: string) {
+  return (await promisify(brotliCompress)(input)).length
+}
+
+export async function gzipSize(input: string) {
+  return (await promisify(gzip)(input)).length
+}
 
 export { version }
 
@@ -52,7 +59,7 @@ export async function getExportsSize({
   bundler: bunderName,
 }: ExportsSizeOptions) {
   const dist = path.resolve('export-size-output')
-  const isLocal = pkg.startsWith('.')
+  const isLocal = pkg[0] === '.' || pkg[0] === '/'
 
   if (output) {
     if (clean && fs.pathExists(dist))
@@ -91,11 +98,9 @@ export async function getExportsSize({
     meta.versions.rollup = getPackageVersion('rollup')
     meta.versions.terser = getPackageVersion('terser')
   }
-  meta.versions['brotli-size'] = getPackageVersion('brotli-size')
 
   const total = Object.keys(exportsPaths).length
   let count = 0
-
   const exports: ExportsInfo[] = []
 
   const externals = [...external, ...dependencies].filter(i => !includes.includes(i))
