@@ -98,7 +98,6 @@ export async function getExportsSize({
     meta.versions.rollup = getPackageVersion('rollup')
     meta.versions.terser = getPackageVersion('terser')
   }
-  meta.versions['brotli-size'] = getPackageVersion('brotli-size')
 
   const total = Object.keys(exportsPaths).length
   let count = 0

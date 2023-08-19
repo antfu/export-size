@@ -77,9 +77,9 @@ yargs
           bar.setTotal(total)
           bar.update(value, { name })
         },
+      }).finally(() => {
+        bar.stop()
       })
-
-      bar.stop()
 
       // versions
       Object
@@ -90,7 +90,7 @@ yargs
 
       const table = new Table({
         chars: { 'mid': '', 'left-mid': '', 'mid-mid': '', 'right-mid': '' },
-        head: ['export\n', 'min+gzip\n'],
+        head: ['export\n', 'min+brotli\n'],
         colAligns: ['left', 'right'],
       })
 

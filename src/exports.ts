@@ -91,19 +91,19 @@ export async function getAllExports(context: string, lookupPath: string, isLocal
     const resolvedPath = local ? resolveLocal(ctx) : resolver(ctx, lookPath)
 
     if (!resolvedPath)
-      return []
+      return {}
 
     if (visited.has(resolvedPath))
-      return []
+      return {}
 
     visited.add(resolvedPath)
 
-    const resolvedExports = {}
+    const resolvedExports: Record<string, string> = {}
     const code = await fs.readFile(resolvedPath, 'utf8')
     const { exports, exportAllLocations } = getExportsDetails(code)
 
     exports.forEach((exp) => {
-      resolvedExports[exp] = resolvedPath
+      resolvedExports[exp] = path.relative(context, resolvedPath)
     })
 
     const promises = exportAllLocations.map(async (location) => {

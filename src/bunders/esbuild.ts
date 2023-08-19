@@ -23,6 +23,7 @@ export class ESBuildBundler extends Bundler {
         mainFields: ['module', 'browser', 'main'],
         external: this.external,
         legalComments: 'none',
+        logLevel: 'silent',
       })
       const bundled = bundledResult.outputFiles[0].text
       const minifiedResult = await transform(bundled, { minify: true, format: 'esm', loader: 'js' })
