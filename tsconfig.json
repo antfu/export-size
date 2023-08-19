@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "ESNext",
-    "lib": ["ESNext"],
+    "lib": ["es2022"],
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
