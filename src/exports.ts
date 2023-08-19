@@ -1,5 +1,3 @@
-/* eslint-disable antfu/no-cjs-exports */
-
 import path from 'node:path'
 import { parse } from '@babel/parser'
 import traverse from '@babel/traverse'

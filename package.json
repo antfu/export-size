@@ -63,7 +63,8 @@
   "eslintConfig": {
     "extends": "@antfu",
     "rules": {
-      "no-console": "off"
+      "no-console": "off",
+      "antfu/no-cjs-exports": "off"
     }
   }
 }
