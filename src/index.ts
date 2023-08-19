@@ -68,11 +68,13 @@ export async function getExportsSize({
   }
 
   const dir = isLocal ? path.resolve(pkg) : path.join(dist, 'temp')
-  const packageDir = isLocal
-    ? dir
-    : await installTemporaryPackage(pkg, dir, extraDependencies)
+  const packageDir = isLocal ? dir : await installTemporaryPackage(pkg, dir, extraDependencies)
 
-  const { name, dependencies, packageJSON } = await loadPackageJSON(packageDir)
+  const {
+    name,
+    dependencies,
+    packageJSON,
+  } = await loadPackageJSON(packageDir)
 
   const exportsPaths = await getAllExports(dir, name, isLocal)
 
@@ -100,33 +102,19 @@ export async function getExportsSize({
 
   const total = Object.keys(exportsPaths).length
   let count = 0
-
   const exports: ExportsInfo[] = []
 
-  const externals = [...external, ...dependencies].filter(
-    i => !includes.includes(i),
-  )
+  const externals = [...external, ...dependencies].filter(i => !includes.includes(i))
   const bundler = getBundler(bunderName, dir, externals)
 
   await bundler.start()
 
   for (const [name, modulePath] of Object.entries(exportsPaths)) {
-    const { bundled, minified } = await bundler.bundle(
-      name,
-      path.resolve(dir, modulePath).replace(/\\/g, '/'),
-    )
+    const { bundled, minified } = await bundler.bundle(name, path.resolve(dir, modulePath).replace(/\\/g, '/'))
 
     if (output) {
-      await fs.writeFile(
-        path.join(dist, 'bundled', `${name}.js`),
-        bundled,
-        'utf-8',
-      )
-      await fs.writeFile(
-        path.join(dist, 'minified', `${name}.min.js`),
-        minified,
-        'utf-8',
-      )
+      await fs.writeFile(path.join(dist, 'bundled', `${name}.js`), bundled, 'utf-8')
+      await fs.writeFile(path.join(dist, 'minified', `${name}.min.js`), minified, 'utf-8')
     }
 
     const bundledSize = bundled.length
