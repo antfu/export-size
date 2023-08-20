@@ -117,9 +117,7 @@ sha 8ef798bf7d22f9cca7681c3bb717af59e6b1685d
 
 ## TODO
 
-- [x] Support local packages
 - [ ] Support JSON output
-- [x] ESBuild / Rollup
 - [ ] Support custom output path
 
 ## Sponsors

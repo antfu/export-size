@@ -5,7 +5,7 @@ import fs from 'fs-extra'
 import { version } from '../package.json'
 import { installTemporaryPackage, loadPackageJSON } from './install'
 import { getAllExports } from './exports'
-import type { SupportBundler } from './bunders'
+import type { Bundler, SupportBundler } from './bunders'
 import { getBundler } from './bunders'
 import { getPackageVersion } from './utils'
 
@@ -20,7 +20,7 @@ export async function gzipSize(input: string) {
 
 export { version }
 
-export * from './bunders/esbuild'
+export * from './bunders'
 export * from './install'
 
 export interface ExportsSizeOptions {
@@ -31,7 +31,7 @@ export interface ExportsSizeOptions {
   output?: boolean
   reporter?: (name: string, progress: number, total: number) => void
   clean?: boolean
-  bundler?: SupportBundler
+  bundler?: SupportBundler | Bundler
   exportsNames?: string[]
 }
 
@@ -106,7 +106,9 @@ export async function getExportsSize({
   const exports: ExportsInfo[] = []
 
   const externals = [...external, ...dependencies].filter(i => !includes.includes(i))
-  const bundler = getBundler(bunderName, dir, externals)
+  const bundler = typeof bunderName === 'string'
+    ? getBundler(bunderName, dir, externals)
+    : bunderName
 
   await bundler.start()
 
