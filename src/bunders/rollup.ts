@@ -21,9 +21,7 @@ export class RollupBundler extends Bundler {
   }
 
   async bundle(exportName: string, exportPath: string) {
-    const entry = exportName === 'default'
-      ? `export { default as _ } from '${exportPath}'`
-      : `export { ${exportName} as _ } from '${exportPath}'`
+    const entry = `export { ${exportName} as _ } from '${exportPath}'`
 
     const id = 'export-size-virtual'
     const bundle = await rollup({

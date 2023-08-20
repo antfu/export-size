@@ -32,6 +32,7 @@ export interface ExportsSizeOptions {
   reporter?: (name: string, progress: number, total: number) => void
   clean?: boolean
   bundler?: SupportBundler
+  exportsNames?: string[]
 }
 
 export interface MetaInfo {
@@ -57,6 +58,7 @@ export async function getExportsSize({
   output = true,
   clean = true,
   bundler: bunderName,
+  exportsNames,
 }: ExportsSizeOptions) {
   const dist = path.resolve('export-size-output')
   const isLocal = pkg[0] === '.' || pkg[0] === '/'
@@ -109,6 +111,9 @@ export async function getExportsSize({
   await bundler.start()
 
   for (const [name, modulePath] of Object.entries(exportsPaths)) {
+    if (exportsNames && !exportsNames.includes(name))
+      continue
+
     const { bundled, minified } = await bundler.bundle(name, path.resolve(dir, modulePath).replace(/\\/g, '/'))
 
     if (output) {
