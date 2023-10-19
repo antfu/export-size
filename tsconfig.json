@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "module": "ESNext",
     "lib": ["es2022"],
-    "allowSyntheticDefaultImports": true,
+    "module": "ESNext",
     "moduleResolution": "node",
-    "esModuleInterop": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
   }
 }

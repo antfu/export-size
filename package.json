@@ -1,7 +1,8 @@
 {
   "name": "export-size",
+  "type": "module",
   "version": "0.6.0",
-  "packageManager": "pnpm@8.6.12",
+  "packageManager": "pnpm@8.9.2",
   "author": "Anthony Fu <anthonyfu117@hotmail.com>",
   "license": "MIT",
   "homepage": "https://github.com/antfu/export-size#readme",
@@ -12,59 +13,51 @@
   "bugs": "https://github.com/antfu/export-size/issues",
   "exports": {
     ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
     }
   },
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
-  "bin": {
-    "export-size": "bin/export-size.mjs"
-  },
+  "bin": "bin/export-size.mjs",
   "files": [
-    "dist",
-    "bin"
+    "bin",
+    "dist"
   ],
   "scripts": {
     "build": "tsup",
     "dev": "esno src/cli.ts",
     "prepublishOnly": "npm run build",
-    "release": "bumpp && npm publish"
+    "release": "bumpp && npm publish",
+    "lint": "eslint ."
   },
   "dependencies": {
-    "@babel/parser": "^7.22.10",
-    "@babel/traverse": "^7.22.10",
-    "@rollup/plugin-node-resolve": "^15.2.0",
-    "chalk": "^4.1.2",
+    "@babel/parser": "^7.23.0",
+    "@babel/traverse": "^7.23.2",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "chalk": "^5.3.0",
     "cli-progress": "^3.12.0",
     "cli-table3": "^0.6.3",
     "enhanced-resolve": "^5.15.0",
-    "esbuild": "^0.19.2",
-    "filesize": "^10.0.12",
+    "esbuild": "^0.19.5",
+    "filesize": "^10.1.0",
     "fs-extra": "^11.1.1",
-    "rollup": "^3.28.0",
-    "terser": "^5.19.2",
+    "rollup": "^3.29.4",
+    "terser": "^5.22.0",
     "yargs": "^17.7.2"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^0.40.2",
-    "@types/cli-progress": "^3.11.0",
-    "@types/fs-extra": "^11.0.1",
-    "@types/node": "^20.5.1",
-    "@types/yargs": "^17.0.24",
-    "bumpp": "^9.1.1",
-    "eslint": "^8.47.0",
+    "@antfu/eslint-config": "^1.0.0-beta.27",
+    "@types/cli-progress": "^3.11.4",
+    "@types/fs-extra": "^11.0.3",
+    "@types/node": "^20.8.7",
+    "@types/yargs": "^17.0.29",
+    "bumpp": "^9.2.0",
+    "eslint": "^8.51.0",
     "esno": "^0.17.0",
     "lodash-es": "^4.17.21",
     "tsup": "^7.2.0",
-    "typescript": "^5.1.6"
-  },
-  "eslintConfig": {
-    "extends": "@antfu",
-    "rules": {
-      "no-console": "off",
-      "antfu/no-cjs-exports": "off"
-    }
+    "typescript": "^5.2.2"
   }
 }

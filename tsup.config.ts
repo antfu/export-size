@@ -6,5 +6,6 @@ export default defineConfig({
   dts: true,
   clean: true,
   splitting: true,
+  shims: true,
   target: 'node16.14',
 })

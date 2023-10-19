@@ -1,4 +1,5 @@
-/* eslint-disable no-unused-expressions */
+/* eslint-disable no-console */
+import process from 'node:process'
 import chalk from 'chalk'
 import yargs from 'yargs'
 import { Presets, SingleBar } from 'cli-progress'
@@ -7,7 +8,7 @@ import fs from 'fs-extra'
 import type { SupportBundler } from './bunders'
 import { getExportsSize, readableSize } from '.'
 
-yargs
+const instance = yargs(process.argv.slice(2))
   .scriptName('export-size')
   .usage('$0 [args]')
   .command(
@@ -53,7 +54,7 @@ yargs
     },
     async (args) => {
       if (!args.package) {
-        yargs.showHelp()
+        instance.showHelp()
         return
       }
 
@@ -115,4 +116,6 @@ yargs
   )
   .showHelpOnFail(false)
   .help()
-  .argv
+
+// eslint-disable-next-line no-unused-expressions
+instance.argv

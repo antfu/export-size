@@ -1,3 +1,4 @@
+/* eslint-disable antfu/no-cjs-exports */
 import path from 'node:path'
 import { brotliCompress, gzip } from 'node:zlib'
 import { promisify } from 'node:util'
