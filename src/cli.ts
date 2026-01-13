@@ -44,6 +44,16 @@ const instance = yargs(process.argv.slice(2))
           alias: 'r',
           describe: 'report json file',
         })
+        .option('json', {
+          default: false,
+          type: 'boolean',
+          alias: 'j',
+          describe: 'output result as json',
+        })
+        .option('json-output', {
+          type: 'string',
+          describe: 'path to save json output',
+        })
         .option('bundler', {
           default: 'esbuild',
           type: 'string',
@@ -82,7 +92,30 @@ const instance = yargs(process.argv.slice(2))
         bar.stop()
       })
 
-      // versions
+      if (args.json || args.jsonOutput) {
+        const pkgExports = exports
+        const jsonOutput = {
+          name: meta.name,
+          version: packageJSON.version,
+          shasum: packageJSON._shasum,
+          versions: meta.versions,
+          exports: pkgExports.map(({ name, minzipped }) => ({
+            name,
+            minzipped,
+            readable: readableSize(minzipped),
+          })),
+        }
+
+        if (args.jsonOutput) {
+          await fs.writeJSON(args.jsonOutput as string, jsonOutput, { spaces: 2 })
+          console.log(chalk.green(`JSON saved to ${chalk.gray(args.jsonOutput as string)}`))
+        }
+        else {
+          console.log(JSON.stringify(jsonOutput, null, 2))
+        }
+        return
+      }
+
       Object
         .entries(meta.versions)
         .forEach(([name, version]) => {
