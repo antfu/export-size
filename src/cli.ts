@@ -44,6 +44,12 @@ const instance = yargs(process.argv.slice(2))
           alias: 'r',
           describe: 'report json file',
         })
+        .option('path', {
+          default: './export-size-report.json',
+          type: 'string',
+          alias: 'p',
+          describe: 'custom path for report json file',
+        })
         .option('bundler', {
           default: 'esbuild',
           type: 'string',
@@ -107,7 +113,7 @@ const instance = yargs(process.argv.slice(2))
       console.log()
 
       if (args.report) {
-        const filepath = './export-size-report.json'
+        const filepath = args.path as string
         await fs.writeJSON(filepath, { meta, exports }, { spaces: 2 })
         console.log(chalk.yellow(`report saved to ${chalk.gray(filepath)}`))
         console.log()
