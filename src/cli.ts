@@ -1,11 +1,10 @@
-/* eslint-disable no-console */
+import type { SupportBundler } from './bunders'
 import process from 'node:process'
 import chalk from 'chalk'
-import yargs from 'yargs'
 import { Presets, SingleBar } from 'cli-progress'
 import Table from 'cli-table3'
 import fs from 'fs-extra'
-import type { SupportBundler } from './bunders'
+import yargs from 'yargs'
 import { getExportsSize, readableSize } from '.'
 
 const instance = yargs(process.argv.slice(2))
@@ -122,5 +121,4 @@ const instance = yargs(process.argv.slice(2))
   .showHelpOnFail(false)
   .help()
 
-// eslint-disable-next-line no-unused-expressions
-instance.argv
+instance.parse()

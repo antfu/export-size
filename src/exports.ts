@@ -2,8 +2,8 @@
 import path from 'node:path'
 import { parse } from '@babel/parser'
 import traverse from '@babel/traverse'
-import fs from 'fs-extra'
 import enhancedResolve from 'enhanced-resolve'
+import fs from 'fs-extra'
 
 /**
  * Parses code to return all named (and default exports)
