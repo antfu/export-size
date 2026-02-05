@@ -12,21 +12,18 @@
   },
   "bugs": "https://github.com/antfu/export-size/issues",
   "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
-    }
+    ".": "./dist/index.mjs",
+    "./cli": "./dist/cli.mjs",
+    "./package.json": "./package.json"
   },
-  "main": "dist/index.cjs",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "types": "./dist/index.d.mts",
   "bin": "bin/export-size.mjs",
   "files": [
     "bin",
     "dist"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "tsdown",
     "dev": "tsx src/cli.ts",
     "start": "tsx src/cli.ts",
     "prepublishOnly": "pnpm run build",
@@ -57,7 +54,7 @@
     "bumpp": "^10.4.0",
     "eslint": "^8.51.0",
     "lodash-es": "^4.17.23",
-    "tsup": "^8.5.1",
+    "tsdown": "^0.20.2",
     "tsx": "^4.8.0",
     "typescript": "^5.9.3"
   }
