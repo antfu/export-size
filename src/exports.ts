@@ -1,9 +1,10 @@
 /* eslint-disable antfu/no-cjs-exports */
+import fsSync from 'node:fs'
+import fs from 'node:fs/promises'
 import path from 'node:path'
 import { parse } from '@babel/parser'
 import traverse from '@babel/traverse'
 import enhancedResolve from 'enhanced-resolve'
-import fs from 'fs-extra'
 
 /**
  * Parses code to return all named (and default exports)
@@ -75,7 +76,7 @@ const resolver = enhancedResolve.create.sync({
 })
 
 function resolveLocal(context: string) {
-  const pkg = JSON.parse(fs.readFileSync(path.join(context, 'package.json'), 'utf-8'))
+  const pkg = JSON.parse(fsSync.readFileSync(path.join(context, 'package.json'), 'utf-8'))
   const index = pkg.module || pkg.main
   if (index)
     return path.join(context, index)

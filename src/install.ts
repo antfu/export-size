@@ -1,10 +1,10 @@
 import { execSync } from 'node:child_process'
+import fs from 'node:fs/promises'
 import path from 'node:path'
-import fs from 'fs-extra'
 import { parsePackage } from './utils'
 
 export async function loadPackageJSON(packageDir: string) {
-  const packageJSON = await fs.readJSON(path.join(packageDir, 'package.json'))
+  const packageJSON = JSON.parse(await fs.readFile(path.join(packageDir, 'package.json'), 'utf-8'))
 
   const dependencies = Array.from(
     new Set([
@@ -34,9 +34,9 @@ export async function installTemporaryPackage(
 
   const { name } = parsePackage(pkg)
 
-  await fs.ensureDir(dir)
+  await fs.mkdir(dir, { recursive: true })
 
-  await fs.writeJSON(path.join(dir, 'package.json'), {
+  await fs.writeFile(path.join(dir, 'package.json'), JSON.stringify({
     type: 'module',
     private: true,
     dependencies: Object.fromEntries(
@@ -45,7 +45,7 @@ export async function installTemporaryPackage(
         return [name, version]
       }),
     ),
-  })
+  }, null, 2))
 
   run('npm i -s')
 

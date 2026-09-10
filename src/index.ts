@@ -1,14 +1,14 @@
 /* eslint-disable antfu/no-cjs-exports */
 import type { Bundler, SupportBundler } from './bunders'
+import fs from 'node:fs/promises'
 import path from 'node:path'
 import { promisify } from 'node:util'
 import { brotliCompress, gzip } from 'node:zlib'
-import fs from 'fs-extra'
 import { version } from '../package.json'
 import { getBundler } from './bunders'
 import { getAllExports } from './exports'
 import { installTemporaryPackage, loadPackageJSON } from './install'
-import { getPackageVersion } from './utils'
+import { getPackageVersion, readableSize } from './utils'
 
 export * from './bunders'
 export async function brotliSize(input: string) {
@@ -22,7 +22,7 @@ export async function gzipSize(input: string) {
 export { version }
 
 export * from './install'
-export { filesize as readableSize } from 'filesize'
+export { readableSize }
 
 export interface ExportsSizeOptions {
   pkg: string
@@ -65,9 +65,9 @@ export async function getExportsSize({
   const isLocal = pkg[0] === '.' || pkg[0] === '/'
 
   if (output) {
-    if (clean && fs.pathExists(dist))
-      await fs.remove(dist)
-    await fs.ensureDir(dist)
+    if (clean)
+      await fs.rm(dist, { recursive: true, force: true })
+    await fs.mkdir(dist, { recursive: true })
   }
 
   const dir = isLocal ? path.resolve(pkg) : path.join(dist, 'temp')
@@ -82,8 +82,8 @@ export async function getExportsSize({
   const exportsPaths = await getAllExports(dir, name, isLocal)
 
   if (output) {
-    await fs.ensureDir(path.join(dist, 'bundled'))
-    await fs.ensureDir(path.join(dist, 'minified'))
+    await fs.mkdir(path.join(dist, 'bundled'), { recursive: true })
+    await fs.mkdir(path.join(dist, 'minified'), { recursive: true })
   }
 
   const meta: MetaInfo = {

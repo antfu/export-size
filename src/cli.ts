@@ -1,124 +1,103 @@
 import type { SupportBundler } from './bunders'
+import fs from 'node:fs/promises'
 import process from 'node:process'
-import chalk from 'chalk'
-import { Presets, SingleBar } from 'cli-progress'
-import Table from 'cli-table3'
-import fs from 'fs-extra'
-import yargs from 'yargs'
+import ansis from 'ansis'
+import cac from 'cac'
 import { getExportsSize, readableSize } from '.'
 
-const instance = yargs(process.argv.slice(2))
-  .scriptName('export-size')
-  .usage('$0 [args]')
-  .command(
-    '* [package]',
-    'Analysis bundle cost for each export of a package',
-    (args) => {
-      return args
-        .positional('package', {
-          type: 'string',
-          describe: 'package names',
-        })
-        .option('install', {
-          default: [] as string[],
-          type: 'array',
-          alias: 'i',
-          describe: 'extra dependencies',
-        })
-        .option('external', {
-          default: [] as string[],
-          type: 'array',
-          alias: 'x',
-          describe: 'external packages',
-        })
-        .option('output', {
-          default: false,
-          type: 'boolean',
-          alias: 'o',
-          describe: 'output',
-        })
-        .option('report', {
-          default: false,
-          type: 'boolean',
-          alias: 'r',
-          describe: 'report json file',
-        })
-        .option('output-file', {
-          default: './export-size-report.json',
-          type: 'string',
-          describe: 'custom path for report json file',
-        })
-        .option('bundler', {
-          default: 'esbuild',
-          type: 'string',
-          alias: 'b',
-          choices: ['esbuild', 'rollup'],
-          describe: 'bundler, can be esbuild or rollup',
-        })
+interface ProgressBar {
+  update: (value: number, total: number, name: string) => void
+  stop: () => void
+}
+
+function createProgressBar(): ProgressBar {
+  const barsize = 40
+
+  return {
+    update(value, total, name) {
+      const ratio = total > 0 ? value / total : 0
+      const filled = Math.round(barsize * ratio)
+      const bar = '█'.repeat(filled) + '░'.repeat(barsize - filled)
+      process.stdout.write(`\r${bar} ${value}/${total} ${ansis.gray(name)}${' '.repeat(20)}`)
     },
-    async (args) => {
-      if (!args.package) {
-        instance.showHelp()
-        return
-      }
+    stop() {
+      process.stdout.write('\r\x1B[K')
+    },
+  }
+}
 
-      const bar = new SingleBar({
-        clearOnComplete: true,
-        hideCursor: true,
-        format: `{bar} {value}/{total} ${chalk.gray('{name}')}`,
-        linewrap: false,
-        barsize: 40,
-      }, Presets.shades_grey)
+function renderTable(rows: [string, string][], head: [string, string]) {
+  const width0 = Math.max(head[0].length, ...rows.map(r => r[0].length))
+  const width1 = Math.max(head[1].length, ...rows.map(r => r[1].length))
 
-      bar.start(0, 0, { name: '' })
+  const lines: string[] = []
+  lines.push(`${head[0].padEnd(width0)}   ${head[1].padStart(width1)}`)
+  for (const [a, b] of rows)
+    lines.push(`${a.padEnd(width0)}   ${b.padStart(width1)}`)
+  return lines.join('\n')
+}
 
-      const { exports, packageJSON, meta } = await getExportsSize({
-        pkg: args.package,
-        external: args.external as string[],
-        extraDependencies: args.install as string[],
-        output: args.output,
-        bundler: args.bundler as SupportBundler,
-        reporter(name, value, total) {
-          bar.setTotal(total)
-          bar.update(value, { name })
-        },
-      }).finally(() => {
-        bar.stop()
+const cli = cac('export-size')
+
+cli
+  .command('[package]', 'Analysis bundle cost for each export of a package')
+  .option('--install, -i <deps>', 'extra dependencies', { type: [String], default: [] })
+  .option('--external, -x <deps>', 'external packages', { type: [String], default: [] })
+  .option('--output, -o', 'output', { default: false })
+  .option('--report, -r', 'report json file', { default: false })
+  .option('--output-file <path>', 'custom path for report json file', { default: './export-size-report.json' })
+  .option('--bundler, -b <bundler>', 'bundler, can be esbuild or rollup', { default: 'esbuild' })
+  .action(async (pkg: string | undefined, options) => {
+    if (!pkg) {
+      cli.outputHelp()
+      return
+    }
+
+    if (options.bundler !== 'esbuild' && options.bundler !== 'rollup') {
+      console.error(`Invalid bundler "${options.bundler}", must be "esbuild" or "rollup"`)
+      process.exitCode = 1
+      return
+    }
+
+    const bar = createProgressBar()
+
+    const { exports, packageJSON, meta } = await getExportsSize({
+      pkg,
+      external: options.external as string[],
+      extraDependencies: options.install as string[],
+      output: options.output,
+      bundler: options.bundler as SupportBundler,
+      reporter(name, value, total) {
+        bar.update(value, total, name)
+      },
+    }).finally(() => {
+      bar.stop()
+    })
+
+    // versions
+    Object
+      .entries(meta.versions)
+      .forEach(([name, version]) => {
+        console.log(ansis.gray(`${name.padEnd(15)}v${version.replace(/^\^/, '')}`))
       })
 
-      // versions
-      Object
-        .entries(meta.versions)
-        .forEach(([name, version]) => {
-          console.log(chalk.gray(`${name.padEnd(15)}v${version.replace(/^\^/, '')}`))
-        })
+    const rows: [string, string][] = exports.map(({ name, minzipped }) => [name, readableSize(minzipped)])
 
-      const table = new Table({
-        chars: { 'mid': '', 'left-mid': '', 'mid-mid': '', 'right-mid': '' },
-        head: ['export\n', 'min+brotli\n'],
-        colAligns: ['left', 'right'],
-      })
+    console.log()
+    console.log(`${ansis.green(meta.name)} v${packageJSON.version}`)
+    if (packageJSON._shasum)
+      console.log(ansis.gray(`sha ${packageJSON._shasum}`))
+    console.log()
+    console.log(renderTable(rows, ['export', 'min+brotli']))
+    console.log()
 
-      for (const { name, minzipped } of exports)
-        table.push([name, readableSize(minzipped)])
-
+    if (options.report) {
+      const filepath = options.outputFile
+      await fs.writeFile(filepath, JSON.stringify({ meta, exports }, null, 2))
+      console.log(ansis.yellow(`report saved to ${ansis.gray(filepath)}`))
       console.log()
-      console.log(`${chalk.green(meta.name)} v${packageJSON.version}`)
-      if (packageJSON._shasum)
-        console.log(chalk.gray(`sha ${packageJSON._shasum}`))
-      console.log()
-      console.log(table.toString())
-      console.log()
+    }
+  })
 
-      if (args.report) {
-        const filepath = args.outputFile
-        await fs.writeJSON(filepath, { meta, exports }, { spaces: 2 })
-        console.log(chalk.yellow(`report saved to ${chalk.gray(filepath)}`))
-        console.log()
-      }
-    },
-  )
-  .showHelpOnFail(false)
-  .help()
-
-instance.parse()
+cli.help()
+cli.parse()
