@@ -46,15 +46,15 @@ cli
   .option('--output, -o', 'output', { default: false })
   .option('--report, -r', 'report json file', { default: false })
   .option('--output-file <path>', 'custom path for report json file', { default: './export-size-report.json' })
-  .option('--bundler, -b <bundler>', 'bundler, can be esbuild or rollup', { default: 'esbuild' })
+  .option('--bundler, -b <bundler>', 'bundler, can be esbuild, rollup or rolldown', { default: 'esbuild' })
   .action(async (pkg: string | undefined, options) => {
     if (!pkg) {
       cli.outputHelp()
       return
     }
 
-    if (options.bundler !== 'esbuild' && options.bundler !== 'rollup') {
-      console.error(`Invalid bundler "${options.bundler}", must be "esbuild" or "rollup"`)
+    if (options.bundler !== 'esbuild' && options.bundler !== 'rollup' && options.bundler !== 'rolldown') {
+      console.error(`Invalid bundler "${options.bundler}", must be "esbuild", "rollup" or "rolldown"`)
       process.exitCode = 1
       return
     }

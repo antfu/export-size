@@ -38,6 +38,7 @@
     "cac": "^7.0.0",
     "enhanced-resolve": "^5.24.5",
     "esbuild": "^0.28.2",
+    "rolldown": "^1.2.7",
     "rollup": "^4.63.1",
     "terser": "^5.51.2"
   },
