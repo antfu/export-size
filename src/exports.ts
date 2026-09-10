@@ -1,4 +1,3 @@
-/* eslint-disable antfu/no-cjs-exports */
 import fsSync from 'node:fs'
 import fs from 'node:fs/promises'
 import path from 'node:path'
@@ -53,9 +52,26 @@ const resolver = enhancedResolve.create.sync({
   mainFields: ['module', 'main'],
 })
 
+function resolvePackageEntry(pkg: any): string | undefined {
+  const exports = pkg.exports
+  if (typeof exports === 'string')
+    return exports
+
+  if (exports && typeof exports === 'object') {
+    // resolve the root `"."` entry through nested condition maps (import/module/default first)
+    let entry = exports['.'] ?? exports
+    while (entry && typeof entry === 'object')
+      entry = entry.import ?? entry.module ?? entry.default ?? entry.require
+    if (typeof entry === 'string')
+      return entry
+  }
+
+  return pkg.module || pkg.main
+}
+
 function resolveLocal(context: string) {
   const pkg = JSON.parse(fsSync.readFileSync(path.join(context, 'package.json'), 'utf-8'))
-  const index = pkg.module || pkg.main
+  const index = resolvePackageEntry(pkg)
   if (index)
     return path.join(context, index)
 }

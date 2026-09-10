@@ -2,13 +2,13 @@
 
 Analysis bundle cost for each export of an ESM package
 
-### Install
+## Install
 
 ```bash
 npx export-size [package-name]
 ```
 
-### Usage
+## Usage
 
 Calculate local package
 
@@ -126,7 +126,7 @@ This project is part of my <a href='https://github.com/antfu-sponsors'>Sponsor P
 
 <p align="center">
   <a href="https://cdn.jsdelivr.net/gh/antfu/static/sponsors.svg">
-    <img src='https://cdn.jsdelivr.net/gh/antfu/static/sponsors.svg'/>
+    <img src='https://cdn.jsdelivr.net/gh/antfu/static/sponsors.svg' alt="Sponsors"/>
   </a>
 </p>
 

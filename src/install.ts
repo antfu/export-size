@@ -1,6 +1,8 @@
 import { execSync } from 'node:child_process'
 import fs from 'node:fs/promises'
 import path from 'node:path'
+import { resolveCommand } from 'package-manager-detector/commands'
+import { detect } from 'package-manager-detector/detect'
 import { parsePackage } from './utils'
 
 export async function loadPackageJSON(packageDir: string) {
@@ -47,7 +49,17 @@ export async function installTemporaryPackage(
     ),
   }, null, 2))
 
-  run('npm i -s')
+  const agent = (await detect({ cwd: dir }))?.agent ?? 'npm'
+  const resolved = resolveCommand(agent, 'install', [])
+  const args = resolved?.args ?? ['install']
+
+  // The temp dir may be nested inside an unrelated pnpm workspace (e.g. this
+  // package's own repo). Without this, pnpm silently absorbs it into that
+  // workspace instead of installing its own dependencies.
+  if (agent === 'pnpm')
+    args.push('--ignore-workspace')
+
+  run(`${resolved?.command ?? 'npm'} ${args.join(' ')}`)
 
   const packageDir = path.join(dir, 'node_modules', name)
 

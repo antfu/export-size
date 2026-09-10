@@ -1,4 +1,3 @@
-/* eslint-disable antfu/no-cjs-exports */
 import type { Bundler, SupportBundler } from './bunders'
 import fs from 'node:fs/promises'
 import path from 'node:path'
@@ -50,6 +49,16 @@ export interface ExportsInfo {
   minzipped: number
 }
 
+async function findPackageRoot(startDir: string) {
+  let dir = startDir
+  for (let parent = path.dirname(dir); dir !== parent; parent = path.dirname(dir)) {
+    if (await fs.access(path.join(dir, 'package.json')).then(() => true, () => false))
+      return dir
+    dir = parent
+  }
+  throw new Error(`Could not find a package.json above ${startDir}`)
+}
+
 export async function getExportsSize({
   pkg,
   external = [],
@@ -63,6 +72,7 @@ export async function getExportsSize({
 }: ExportsSizeOptions) {
   const dist = path.resolve('export-size-output')
   const isLocal = pkg[0] === '.' || pkg[0] === '/'
+  const isLocalFile = isLocal && (await fs.stat(path.resolve(pkg))).isFile()
 
   if (output) {
     if (clean)
@@ -70,8 +80,9 @@ export async function getExportsSize({
     await fs.mkdir(dist, { recursive: true })
   }
 
-  const dir = isLocal ? path.resolve(pkg) : path.join(dist, 'temp')
-  const packageDir = isLocal ? dir : await installTemporaryPackage(pkg, dir, extraDependencies)
+  const localEntry = isLocal ? path.resolve(pkg) : undefined
+  const dir = isLocalFile ? path.dirname(localEntry!) : (isLocal ? localEntry! : path.join(dist, 'temp'))
+  const packageDir = isLocalFile ? await findPackageRoot(dir) : (isLocal ? dir : await installTemporaryPackage(pkg, dir, extraDependencies))
 
   const {
     name,
@@ -79,7 +90,9 @@ export async function getExportsSize({
     packageJSON,
   } = await loadPackageJSON(packageDir)
 
-  const exportsPaths = await getAllExports(dir, name, isLocal)
+  const exportsPaths = isLocalFile
+    ? await getAllExports(dir, `./${path.basename(localEntry!)}`, false)
+    : await getAllExports(dir, name, isLocal)
 
   if (output) {
     await fs.mkdir(path.join(dist, 'bundled'), { recursive: true })
@@ -113,6 +126,9 @@ export async function getExportsSize({
   const bundler = typeof bunderName === 'string'
     ? getBundler(bunderName, dir, externals)
     : bunderName
+
+  if (!bundler)
+    throw new Error('Failed to initialize bundler')
 
   await bundler.start()
 
