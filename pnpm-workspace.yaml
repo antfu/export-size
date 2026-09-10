@@ -1,6 +1,6 @@
 minimumReleaseAgeExcludePrune: true
 minimumReleaseAgeExclude:
-  - '@types/node@25.9.6 || 26.5.1'
+  - '@types/node@26.5.1'
 
 trustPolicy: no-downgrade
 

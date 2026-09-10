@@ -2,58 +2,36 @@
 import fsSync from 'node:fs'
 import fs from 'node:fs/promises'
 import path from 'node:path'
-import { parse } from '@babel/parser'
-import traverse from '@babel/traverse'
 import enhancedResolve from 'enhanced-resolve'
+import { parseSync } from 'rolldown/utils'
 
 /**
  * Parses code to return all named (and default exports)
  * as well as `export * from` locations
  */
 function getExportsDetails(code: string) {
-  const ast = parse(code, {
-    sourceType: 'module',
-    allowUndeclaredExports: true,
-    plugins: ['exportDefaultFrom'],
-  })
+  const { module, errors } = parseSync('file.js', code, { sourceType: 'module' })
 
-  const exportAllLocations = []
-  let exportsList = []
+  if (errors.length)
+    throw new Error(errors.map(error => error.message).join('\n'))
 
-    ;(traverse.default || traverse)(ast, {
-    ExportNamedDeclaration(path) {
-      const { specifiers, declaration } = path.node
-      exportsList = exportsList.concat(
-        specifiers.map(specifier => specifier.exported.name),
-      )
+  const exportAllLocations: string[] = []
+  const exportsList: string[] = []
 
-      if (declaration) {
-        if (declaration.declarations) {
-          declaration.declarations.forEach((dec) => {
-            if (dec.id.type === 'ObjectPattern') {
-              exportsList = exportsList.concat(
-                dec.id.properties.map(property => property.value.name),
-              )
-            }
-            else if (dec.id.type === 'Identifier') {
-              exportsList.push(dec.id.name)
-            }
-          })
-        }
-        else if (declaration.id) {
-          exportsList.push(declaration.id.name)
-        }
+  for (const { entries } of module.staticExports) {
+    for (const entry of entries) {
+      // `export * from 'mod'` — forwards unknown names, resolved recursively
+      if (entry.importName.kind === 'AllButDefault') {
+        exportAllLocations.push(entry.moduleRequest!.value)
+        continue
       }
-    },
 
-    ExportDefaultDeclaration() {
-      exportsList.push('default')
-    },
-
-    ExportAllDeclaration(path) {
-      exportAllLocations.push(path.node.source.value)
-    },
-  })
+      if (entry.exportName.kind === 'Default')
+        exportsList.push('default')
+      else if (entry.exportName.kind === 'Name')
+        exportsList.push(entry.exportName.name!)
+    }
+  }
 
   return {
     exportAllLocations,

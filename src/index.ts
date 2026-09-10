@@ -97,6 +97,9 @@ export async function getExportsSize({
   if (bunderName === 'esbuild') {
     meta.versions.esbuild = getPackageVersion('esbuild')
   }
+  else if (bunderName === 'rolldown') {
+    meta.versions.rolldown = getPackageVersion('rolldown')
+  }
   else {
     meta.versions.rollup = getPackageVersion('rollup')
     meta.versions.terser = getPackageVersion('terser')
