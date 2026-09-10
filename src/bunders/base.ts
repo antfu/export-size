@@ -1,6 +1,6 @@
 export abstract class Bundler {
-  name: string
-  version: string
+  name!: string
+  version?: string
 
   constructor(
     public dir: string,
@@ -11,7 +11,7 @@ export abstract class Bundler {
   abstract start(): Promise<void>
   abstract stop(): Promise<void>
   abstract bundle(exportName: string, exportPath: string): Promise<{
-    bundled?: string
+    bundled: string
     minified: string
   }>
 }

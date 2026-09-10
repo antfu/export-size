@@ -47,7 +47,7 @@ export class RollupBundler extends Bundler {
 
     const generated = await bundle.generate({})
     const bundled = generated.output[0].code
-    const { code: minified } = await minify(bundled, {
+    const { code: minified = '' } = await minify(bundled, {
       format: {
         comments: false,
       },

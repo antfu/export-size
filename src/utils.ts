@@ -12,7 +12,7 @@ export function parsePackage(fullname: string) {
 }
 
 export function getPackageVersion(name: string) {
-  return dependencies[name]
+  return (dependencies as Record<string, string>)[name]
 }
 
 const UNITS = ['B', 'kB', 'MB', 'GB', 'TB']
