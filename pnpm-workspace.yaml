@@ -1,6 +1,17 @@
-shellEmulator: true
+minimumReleaseAgeExcludePrune: true
+minimumReleaseAgeExclude:
+  - '@types/node@25.9.6 || 26.5.1'
 
 trustPolicy: no-downgrade
+
+update:
+  ignoreDeps:
+    - typescript@7
+
+shellEmulator: true
+
+allowBuilds:
+  esbuild: true
 
 onlyBuiltDependencies:
   - esbuild

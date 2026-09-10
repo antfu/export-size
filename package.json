@@ -2,7 +2,7 @@
   "name": "export-size",
   "type": "module",
   "version": "0.8.0",
-  "packageManager": "pnpm@10.28.2",
+  "packageManager": "pnpm@12.3.4",
   "author": "Anthony Fu <anthonyfu117@hotmail.com>",
   "license": "MIT",
   "homepage": "https://github.com/antfu/export-size#readme",
@@ -31,31 +31,31 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@babel/parser": "^7.29.0",
-    "@babel/traverse": "^7.29.0",
+    "@babel/parser": "^7.29.8",
+    "@babel/traverse": "^7.29.8",
     "@rollup/plugin-node-resolve": "^16.0.3",
-    "chalk": "^5.6.2",
+    "chalk": "^6.0.0",
     "cli-progress": "^3.12.0",
     "cli-table3": "^0.6.5",
-    "enhanced-resolve": "^5.19.0",
-    "esbuild": "^0.27.2",
-    "filesize": "^11.0.13",
-    "fs-extra": "^11.3.3",
-    "rollup": "^4.57.1",
-    "terser": "^5.46.0",
-    "yargs": "^18.0.0"
+    "enhanced-resolve": "^5.24.5",
+    "esbuild": "^0.28.2",
+    "filesize": "^11.0.23",
+    "fs-extra": "^11.4.0",
+    "rollup": "^4.63.1",
+    "terser": "^5.51.2",
+    "yargs": "^18.1.0"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^7.2.0",
+    "@antfu/eslint-config": "^9.5.1",
     "@types/cli-progress": "^3.11.6",
     "@types/fs-extra": "^11.0.4",
-    "@types/node": "^25.2.0",
+    "@types/node": "^26.5.1",
     "@types/yargs": "^17.0.35",
-    "bumpp": "^10.4.0",
-    "eslint": "^8.51.0",
-    "lodash-es": "^4.17.23",
-    "tsdown": "^0.20.2",
-    "tsx": "^4.8.0",
-    "typescript": "^5.9.3"
+    "bumpp": "^12.3.0",
+    "eslint": "^10.10.0",
+    "lodash-es": "^4.18.1",
+    "tsdown": "^0.23.0",
+    "tsx": "^4.23.13",
+    "typescript": "^6.0.3"
   }
 }
