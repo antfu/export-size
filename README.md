@@ -28,6 +28,76 @@ More options
 npx export-size --help
 ```
 
+### CLI options
+
+| Option | Description | Default |
+| --- | --- | --- |
+| `--install, -i <deps>` | Extra dependencies to install alongside the package | `[]` |
+| `--external, -x <deps>` | Packages to mark as external (excluded from the bundle) | `[]` |
+| `--output, -o` | Emit the bundled and minified files to `export-size-output/` | `false` |
+| `--report, -r` | Write a JSON report | `false` |
+| `--output-file <path>` | Path for the JSON report (implies `--report`) | `./export-size-report.json` |
+| `--bundler, -b <bundler>` | Bundler to use, one of `esbuild`, `rollup`, `rolldown` | `esbuild` |
+
+### Bundlers
+
+`export-size` supports multiple bundlers under the hood to measure each export's cost:
+
+- **`esbuild`** (default) — fastest, minifies with esbuild's built-in minifier
+- **`rollup`** — bundles with Rollup and minifies with [`terser`](https://github.com/terser/terser)
+- **`rolldown`** — bundles and minifies with [Rolldown](https://rolldown.rs)
+
+```bash
+npx export-size @vueuse/core --bundler rollup
+npx export-size @vueuse/core --bundler rolldown
+```
+
+## Programmatic Usage
+
+```bash
+npm i -D export-size
+```
+
+```ts
+import { getExportsSize } from 'export-size'
+
+const { meta, exports, packageJSON } = await getExportsSize({
+  pkg: '@vueuse/core', // npm package name, or a path to a local package/file
+  bundler: 'esbuild', // 'esbuild' | 'rollup' | 'rolldown', defaults to 'esbuild'
+  external: [], // packages to mark as external
+  includes: [], // dependencies to force-bundle instead of marking external
+  extraDependencies: [], // extra dependencies to install when resolving a remote package
+  output: false, // whether to emit bundled/minified files to export-size-output/
+  clean: true, // clean the output directory before running
+  exportsNames: undefined, // only analyze these specific export names
+  reporter(name, progress, total) {
+    console.log(`${progress}/${total} ${name}`)
+  },
+})
+
+console.log(meta) // { name, dependencies, versions }
+console.log(exports) // [{ name, path, bundled, minified, minzipped }, ...]
+```
+
+You can also pass a custom bundler instance instead of a bundler name, by extending the abstract `Bundler` class exported from `export-size`:
+
+```ts
+import { Bundler, getExportsSize } from 'export-size'
+
+class MyBundler extends Bundler {
+  async start() { /* ... */ }
+  async stop() { /* ... */ }
+  async bundle(exportName: string, exportPath: string) {
+    return { bundled: '...', minified: '...' }
+  }
+}
+
+await getExportsSize({
+  pkg: '@vueuse/core',
+  bundler: new MyBundler(dir, external),
+})
+```
+
 Example output
 
 ```
